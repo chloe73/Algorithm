@@ -73,6 +73,8 @@ public class Main_bj_16933_벽부수고이동하기3 {
 				// 범위를 벗어난 경우 패스
 				if(nx < 0 ||ny < 0 ||nx >= N ||ny >= M) continue;
 				
+				if(visited[nx][ny][p.destroy][p.day==0?1:0]) continue;
+				
 				if(board[nx][ny] == 0) {
 					if(p.day == 0 && !visited[nx][ny][p.destroy][1]) {
 						visited[nx][ny][p.destroy][1] = true;
