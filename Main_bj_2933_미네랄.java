@@ -39,7 +39,7 @@ public class Main_bj_2933_미네랄 {
 		N = Integer.parseInt(br.readLine());
 		st = new StringTokenizer(br.readLine());
 		for(int i=0;i<N;i++) {
-			int h = Integer.parseInt(st.nextToken());
+			int h = R - Integer.parseInt(st.nextToken());
 			
 			breakMineral(h,i);
 			bfs();
