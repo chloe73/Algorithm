@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 
 public class Main_bj_2632_피자판매 {
 	
-	static int p,m,n,result;
+	static int p,m,n,result=0;
 	static int[] A,B;
 	static boolean[] check;
 	static ArrayList<Integer> Alist = new ArrayList<>();
@@ -73,7 +73,7 @@ public class Main_bj_2632_피자판매 {
 				
 				while(right >= 0 &&Blist.get(right) == rv) {
 					rc++;
-					right++;
+					right--;
 				}
 				
 				result += lc * rc;
