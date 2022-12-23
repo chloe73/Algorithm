@@ -92,31 +92,29 @@ public class Main_bj_4991_로봇청소기 {
 
 	private static int bfs(Point s, Point e) {
 		
-		Queue<int[]> q = new LinkedList<>();
+		Queue<Point> q = new LinkedList<>();
 		boolean[][] visited = new boolean[H][W];
-		q.add(new int[] {s.x,s.y,0});
+		q.add(s);
 		visited[s.x][s.y] = true;
 		
+		int num = 0;
 		while(!q.isEmpty()) {
-			int[] temp = q.poll();
-			int x = temp[0];
-			int y = temp[1];
-			int cnt = temp[2];
+			int size = q.size();
+			++num;
 			
-			if(x == e.x && y == e.y) {
-				return cnt;
-			}
-			
-			for(int i=0;i<4;i++) {
-				int nx = x + dx[i];
-				int ny = y + dy[i];
-				
-				if(nx<0 || ny<0 || nx>=H || ny>=H) continue;
-				
-				if(visited[nx][ny] || board[nx][ny] == 'x') continue;
-				
-				q.add(new int[] {nx,ny,cnt+1});
-				visited[nx][ny] = true;
+			while(size-->0) {
+				Point now = q.poll();
+				for(int d=0;d<4;d++) {
+					int nx = now.x + dx[d];
+					int ny = now.y + dy[d];
+					
+					if(nx<0 || ny<0 || nx>=H || ny>=W || visited[nx][ny] || board[nx][ny] == 'x') continue;
+					
+					if(nx == e.x && ny == e.y) return num;
+					
+					visited[nx][ny] = true;
+					q.add(new Point(nx, ny));
+				}
 			}
 		}
 		
