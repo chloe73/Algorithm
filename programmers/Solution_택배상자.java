@@ -27,7 +27,7 @@ public class Solution_택배상자 {
         	
         	if(order[idx] == num) {
         		answer++;
-        		
+        		 
         		idx++;
         		num++;
         		
