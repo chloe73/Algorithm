@@ -26,9 +26,10 @@ public class Main_bj_1937_욕심쟁이판다 {
         } // input end
 
         result = 0;
+        dp = new int[N][N];
+
         for(int i=0;i<N;i++) {
             for(int j=0;j<N;j++) {
-                dp = new int[N][N];
                 result = Math.max(result,dfs(i,j));
             }
         }
@@ -40,7 +41,7 @@ public class Main_bj_1937_욕심쟁이판다 {
 
         if(dp[x][y] != 0) return dp[x][y];
 
-        int cnt = 1;
+        dp[x][y] = 1;
         for(int i=0;i<4;i++) {
             int nx = x + dx[i];
             int ny = y + dy[i];
@@ -48,10 +49,10 @@ public class Main_bj_1937_욕심쟁이판다 {
             if(nx<0 || ny<0 || nx>=N || ny>=N) continue;
 
             if(board[nx][ny] > board[x][y]) {
-                cnt = Math.max(cnt, dfs(nx,ny)+1);
+                dp[x][y] = Math.max(dp[x][y], dfs(nx,ny)+1);
             }
         }
 
-        return cnt;
+        return dp[x][y];
     }
 }
