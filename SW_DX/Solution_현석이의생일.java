@@ -24,25 +24,11 @@ public class Solution_현석이의생일 {
 
             result = Integer.MIN_VALUE;
 
-            binarySearch();
 
             sb.append("#"+tc+" ").append(result).append("\n");
         }
         System.out.println(sb.toString());
     }
 
-    private static void binarySearch() {
-
-        int mid;
-        int low = 0;
-        int high = N;
-
-        while(low <= high) {
-            mid = (low+high) / 2;
-            
-             
-            
-            
-        }
-    }
+    
 }

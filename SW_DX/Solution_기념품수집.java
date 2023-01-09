@@ -52,8 +52,6 @@ public class Solution_기념품수집 {
 		
 		result = Math.max(result, cnt);
 		
-		
-		
 		for(int i=0;i<4;i++) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
