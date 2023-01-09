@@ -39,6 +39,10 @@ public class Solution_현석이의생일 {
 
         while(low <= high) {
             mid = (low+high) / 2;
+            
+             
+            
+            
         }
     }
 }
