@@ -3,6 +3,7 @@ package algo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -22,6 +23,7 @@ public class Softeer_5th_성적평가 {
         }
     }
     static PriorityQueue<Point> pq;
+    static HashMap<Integer, Integer> hmap = new HashMap<>();
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
