@@ -16,7 +16,7 @@ public class Main_bj_17837_새로운게임2 {
 	static int[] dx = {0,0,0,-1,1};
 	static int[] dy = {0,1,-1,0,0};
 	static int[][] board;
-	static Queue<Integer>[][] q;
+	static ArrayList<Integer>[][] list;
 	static ArrayList<Horse> hList = new ArrayList<>();
 	static class Horse {
 		int x,y,d;
@@ -36,10 +36,10 @@ public class Main_bj_17837_새로운게임2 {
 		K = Integer.parseInt(st.nextToken());
 		
 		board = new int[N][N];
-		q = new LinkedList[N][N];
+		list = new ArrayList[N][N];
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++) {
-				q[i][j] = new LinkedList<Integer>();
+				list[i][j] = new ArrayList<Integer>();
 			}
 		}
 		for(int i=0;i<N;i++) {
@@ -55,7 +55,7 @@ public class Main_bj_17837_새로운게임2 {
 			int c = Integer.parseInt(st.nextToken())-1;
 			int d = Integer.parseInt(st.nextToken());
 			hList.add(new Horse(r, c, d));
-			q[r][c].add(i);
+			list[r][c].add(i);
 		} // input end
 		
 		result = solve();
@@ -71,21 +71,68 @@ public class Main_bj_17837_새로운게임2 {
 			for(int i=0;i<K;i++) {
 				// 현재 탐색하는 말의 번호와 상태
 				Horse now = hList.get(i);
+				ArrayList<Integer> up_horse = new ArrayList<>();
+				int start_idx = 0;
+				int x = now.x;
+				int y = now.y;
+				
+				for(int p=0;p<list[x][y].size();p++) {
+					if(list[x][y].get(p) == i) {
+						start_idx = p;
+						break;
+					}
+				}
+				
+				for(int p=start_idx;p<list[x][y].size();p++) {
+					up_horse.add(list[x][y].get(p));
+				}
 				
 				int nx = now.x + dx[now.d];
 				int ny = now.y + dy[now.d];
 				
-				if(isValid(nx, ny)) {
-					moveHorse(nx,ny,i);
-				} else { // 이동하려는 칸이 범위를 벗어난 경우 = 파란색의 경우
-					now.d = changeDir(now.d);
-					nx = now.x + dx[now.d];
-					ny = now.y + dy[now.d];
-					
+				if(!isValid(nx, ny) || board[nx][ny] == 2) {
+					hList.get(i).d = changeDir(hList.get(i).d);
+					nx = now.x + dx[hList.get(i).d];
+					ny = now.y + dy[hList.get(i).d];
+					if(!isValid(nx, ny) || board[nx][ny] == 2) continue;
+					else {
+						if(board[nx][ny] == 0) {
+							for(int h : up_horse) {
+								list[nx][ny].add(h);
+								hList.get(h).x = nx;
+								hList.get(h).y = ny;
+							}
+						}
+						else if(board[nx][ny] == 1) {
+							for(int p=up_horse.size()-1;p>=0;p--) {
+								list[nx][ny].add(up_horse.get(p));
+								hList.get(up_horse.get(p)).x = nx;
+								hList.get(up_horse.get(p)).y = ny;
+							}
+						}
+					}
+				}
+				else if(board[nx][ny] == 0) {
+					for(int h : up_horse) {
+						list[nx][ny].add(h);
+						hList.get(h).x = nx;
+						hList.get(h).y = ny;
+					}
+				}
+				else if(board[nx][ny] == 1) {
+					for(int p=up_horse.size()-1;p>=0;p--) {
+						list[nx][ny].add(up_horse.get(p));
+						hList.get(up_horse.get(p)).x = nx;
+						hList.get(up_horse.get(p)).y = ny;
+					}
 				}
 				
 				// 2. 4개 이상 쌓이는 순간 게임 종료
-				if(q[now.x][now.y].size() >= 4) return turn;
+				if(list[now.x][now.y].size() >= 4) return turn;
+				
+				for(int p=list[x][y].size()-1;p>=start_idx;p--) {
+					list[x][y].remove(p);
+				}
 			}
 			
 			
@@ -93,44 +140,6 @@ public class Main_bj_17837_새로운게임2 {
 		}
 		
 		return -1;
-	}
-	
-	private static void moveHorse(int nx, int ny, int i) {
-		
-		int x = hList.get(i).x;
-		int y = hList.get(i).y;
-		
-		if(board[nx][ny] == 0) { // 흰색인 경우
-			
-			while(!q[x][y].isEmpty()) {
-				int temp = q[x][y].poll();
-				q[nx][ny].add(temp);
-				hList.get(temp).x = nx;
-				hList.get(temp).y = ny;
-			}
-
-		} else if(board[nx][ny] == 1) { // 빨간색인 경우
-			Stack<Integer> stack = new Stack<Integer>();
-			int size = q[x][y].size();
-			for(int k=0;k<size;k++) {
-				stack.add(q[x][y].poll());
-			}
-			while(!stack.isEmpty()) {
-				int temp = stack.pop();
-				q[nx][ny].add(temp);
-				hList.get(temp).x = nx;
-				hList.get(temp).y = ny;
-			}
-			
-		} else if(board[nx][ny] == 2) { // 파란색인 경우
-			hList.get(i).d = changeDir(hList.get(i).d);
-			nx = x + dx[hList.get(i).d];
-			ny = y + dy[hList.get(i).d];
-			if(isValid(nx, ny)&& board[nx][ny] != 2) {
-				moveHorse(nx, ny, i);
-			}
-		}
-		
 	}
 
 	private static int changeDir(int dir) {
