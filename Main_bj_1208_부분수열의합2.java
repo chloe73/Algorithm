@@ -35,6 +35,7 @@ public class Main_bj_1208_부분수열의합2 {
 		Collections.sort(leftList);
 		Collections.sort(rightList);
 		
+		result = 0;
 		solve();
 		
 		if(S == 0) result -= 1;
@@ -43,37 +44,34 @@ public class Main_bj_1208_부분수열의합2 {
 	}
 
 	private static void solve() {
-		int left = 0;
-		int right = rightList.size()-1;
-		
-		while(left < leftList.size() && right >= 0) {
-			int valL = leftList.get(left);
-			int valR = rightList.get(right);
+		int pointL = 0;
+		int pointR = rightList.size()-1;
+		while(pointL < leftList.size() && pointR >= 0) {
+			int valL = leftList.get(pointL);
+			int valR = rightList.get(pointR);
 			
-			if(valL +valR == S) {
+			if(valL + valR == S) {
 				long cntL = 0;
 				long cntR = 0;
 				
-				while(left < leftList.size() && valL == leftList.get(left)) {
+				//왼쪽리스트에서 같은 수 찾기
+				while(pointL < leftList.size() && valL == leftList.get(pointL)) {
 					cntL++;
-					left++;
+					pointL++;
 				}
-				
-				while(right >= 0 && valR == rightList.get(right)) {
+				//오른쪽리스트에서 같은 수 찾기
+				while(pointR >= 0 && valR == rightList.get(pointR)) {
 					cntR++;
-					right--;
+					pointR--;
 				}
-				
-				result += cntL * cntR;
+				result += cntL*cntR;
 			}
-			
-			if(valL + valR < S) {
-				left++;
+			if(valL + valR < S) { 
+				pointL++;
 			}
-			
 			if(valL + valR > S) {
-				right--;
-			}
+				pointR--;
+			}				
 		}
 	}
 
