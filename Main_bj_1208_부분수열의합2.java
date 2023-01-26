@@ -9,7 +9,8 @@ import java.util.StringTokenizer;
 
 public class Main_bj_1208_부분수열의합2 {
 	
-	static int N,S,result;
+	static int N,S;
+	static long result;
 	static int[] arr;
 	static ArrayList<Integer> leftList, rightList;
 
