@@ -9,6 +9,7 @@ public class Main_bj_11404_플로이드 {
 	
 	static int N,M;
 	static int[][] dist;
+	static int INF = 1000000000;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -22,7 +23,7 @@ public class Main_bj_11404_플로이드 {
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++) {
 				if(i == j) continue;
-				dist[i][j] = 100001;
+				dist[i][j] = INF;
 			}
 		}
 		
@@ -39,7 +40,7 @@ public class Main_bj_11404_플로이드 {
 		
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++) {
-				if(dist[i][j] == 100001) sb.append(0+" ");
+				if(dist[i][j] == INF) sb.append(0+" ");
 				else sb.append(dist[i][j]+" ");
 			}
 			sb.append("\n");
