@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 public class Main_bj_3109_빵집 {
 	
 	static int R,C,result;
-	static char[][] board;
+	static char[][] board,copy;
 	static int[] dx = {0,-1,1};
 	static int[] dy = {1,1,1};
 
@@ -21,6 +21,7 @@ public class Main_bj_3109_빵집 {
 		C = Integer.parseInt(st.nextToken());
 		
 		board = new char[R][C];
+		copy = new char[R][C];
 		for(int i=0;i<R;i++) {
 			String s = br.readLine();
 			board[i] = s.toCharArray();
@@ -39,8 +40,18 @@ public class Main_bj_3109_빵집 {
 			return;
 		}
 		
-		
+		if(board[x][y] == '.') {
+			
+		}
 		
 	}
 
+	private static void copy() {
+		
+		for(int i=0;i<R;i++) {
+			for(int j=0;j<C;j++) {
+				copy[i][j] = board[i][j];
+			}
+		}
+	}
 }
