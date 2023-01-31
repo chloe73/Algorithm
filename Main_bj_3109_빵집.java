@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 public class Main_bj_3109_빵집 {
 	
 	static int R,C,result;
-	static char[][] board,copy;
+	static char[][] board;
 	static int[] dx = {0,-1,1};
 	static int[] dy = {1,1,1};
 
@@ -21,37 +21,38 @@ public class Main_bj_3109_빵집 {
 		C = Integer.parseInt(st.nextToken());
 		
 		board = new char[R][C];
-		copy = new char[R][C];
 		for(int i=0;i<R;i++) {
 			String s = br.readLine();
 			board[i] = s.toCharArray();
 		} // input end
 		
-		result = Integer.MIN_VALUE;
-		solve(0,0,0);
+		for(int i=0;i<R;i++) {
+			if(solve(i,0)) result++;
+		}
 		
 		System.out.println(result);
 	}
 
-	private static void solve(int x, int y, int cnt) {
+	private static boolean solve(int x, int y) {
 		
-		if(y == C-1) { // 현재 열이 마지막 열이라면 
-			result = Math.max(result, cnt);
-			return;
+		board[x][y] = '*';
+		
+		if(y == C-1) return true;
+		
+		if(x>0 && board[x-1][y+1] == '.') { // 오른쪽 위
+			if(solve(x-1,y+1)) return true;
 		}
 		
-		if(board[x][y] == '.') {
-			
+		if(board[x][y+1] == '.') { // 오른쪽
+			if(solve(x,y+1)) return true;
 		}
-		
-	}
 
-	private static void copy() {
-		
-		for(int i=0;i<R;i++) {
-			for(int j=0;j<C;j++) {
-				copy[i][j] = board[i][j];
-			}
+		if(x+1 < R && board[x+1][y+1] == '.') { // 오른쪽 아래
+			if(solve(x+1,y+1)) return true;
 		}
+		
+		return false;
+		
 	}
+	
 }
