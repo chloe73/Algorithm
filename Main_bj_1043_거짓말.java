@@ -24,6 +24,12 @@ public class Main_bj_1043_거짓말 {
 		M = Integer.parseInt(st.nextToken()); // 파티의 수
 		story = new boolean[N+1];
 		
+		// union-find 초기화
+		parent = new int[N+1];
+		for(int i=1;i<=N;i++) {
+			parent[i] = i;
+		}
+		
 		// 진실을 아는 사람들 정보 입력 받기
 		st = new StringTokenizer(br.readLine());
 		int truthNum = Integer.parseInt(st.nextToken()); // 진실을 아는 사람들의 수
@@ -40,21 +46,58 @@ public class Main_bj_1043_거짓말 {
 			party_people[i] = new ArrayList<>();
 		}
 		
+		int value, pre = 0;
 		for(int i=0;i<M;i++) {
 			st = new StringTokenizer(br.readLine());
 			int size = Integer.parseInt(st.nextToken()); // 각 파티에 오는 사람들 수
-			if(size > 0) {				
-				for(int j=0;j<size;j++) {
-					// 파티에 오는 사람들 번호
-					int num = Integer.parseInt(st.nextToken());
-					party_people[i].add(num);
-				}
+			
+			// 파티에 오는 사람들 번호
+			if(size > 0) {
+				pre = Integer.parseInt(st.nextToken());
+				party_people[i].add(pre);
+			}
+			
+			for(int j=1;j<size;j++) {
+				value = Integer.parseInt(st.nextToken());
+				party_people[i].add(value);
+				union(pre, value);
+				pre = value;
 			}
 		} // input end
 		
-		
+		for(int i=1;i<story.length;i++) {
+			if(story[i]) {
+				story[find(i)] = true;
+			}
+		}
+		int parent;
+		for(int i=0;i<M;i++) {
+			if(party_people[i].size() > 0) {
+				parent = find(party_people[i].get(0));
+				if(!story[parent]) result++;
+			}
+		}
 		
 		System.out.println(result);
+	}
+
+	private static int find(int x) {
+		if(parent[x] == x)
+			return x;
+		else 
+			return find(parent[x]);
+	}
+
+	private static boolean union(int a, int b) {
+		a = find(a);
+		b = find(b);
+		
+		if(a != b) {
+			if(a>b) parent[a] = b;
+			else parent[b] = a;
+			return true;
+		}
+		return false;
 	}
 
 }
