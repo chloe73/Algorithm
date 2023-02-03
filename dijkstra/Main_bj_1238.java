@@ -30,7 +30,7 @@ public class Main_bj_1238 {
         for(int i=0;i<M;i++) {
             st = new StringTokenizer(br.readLine());
             for(int j=0;j<3;j++) {
-
+            	
             }
         }
     }
