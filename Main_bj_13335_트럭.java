@@ -28,7 +28,30 @@ public class Main_bj_13335_트럭 {
 			q.add(num);
 		} // input end
 		
+		Queue<Integer> bridge = new LinkedList<Integer>();
+		// 다리 길이 초기 세팅 : 다리 길이 만큼 큐에 0씩 추가
+		for(int w=0;w<W;w++) {
+			bridge.add(0);
+		}
 		
+		int cnt = 0; // 트럭의 개수
+		int sum = 0; // 트럭의 무게
+		
+		while(!bridge.isEmpty()) {
+			sum -= bridge.poll();
+			if(!q.isEmpty()) {
+				if(sum + q.peek() <= L) {
+					int truck = q.poll();
+					sum += truck;
+					bridge.add(truck);
+				}
+				else {
+					bridge.add(0);
+				}
+			}
+			result++;
+		}
+		System.out.println(result);
 	}
 
 }
