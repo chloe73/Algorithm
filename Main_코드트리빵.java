@@ -20,13 +20,11 @@ public class Main_코드트리빵 {
     static class Person {
         int x,y; // 현재 위치
         int tx,ty; // 편의점 위치
-        boolean arrived;
-        public Person(int x, int y,int tx, int ty, boolean arrived) {
+        public Person(int x, int y,int tx, int ty) {
             this.x = x;
             this.y = y;
             this.tx = tx;
             this.ty = ty;
-            this.arrived = arrived;
         }
     }
     static ArrayList<Person> waiting;
@@ -50,7 +48,7 @@ public class Main_코드트리빵 {
         }
 
         waiting = new ArrayList<>();
-        waiting.add(new Person(-2,-2,-2,-2,false));
+        waiting.add(new Person(-2,-2,-2,-2));
         moving = new ArrayList<>();
         removeList = new ArrayList<>();
         
@@ -59,7 +57,7 @@ public class Main_코드트리빵 {
             int tx = Integer.parseInt(st.nextToken())-1;
             int ty = Integer.parseInt(st.nextToken())-1;
 
-            waiting.add(new Person(-1,-1,tx,ty,false));
+            waiting.add(new Person(-1,-1,tx,ty));
 
             board[tx][ty] = 2; // 격자에 편의점 위치 2로 표시
         }
@@ -131,6 +129,7 @@ public class Main_코드트리빵 {
     					direction = dir + "";
     				}
     			}
+    			break;
     		}
     		
     		for(int i=1;i<=4;i++) {
