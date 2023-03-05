@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 public class Main_bj_19237_어른상어 {
 	
 	static int N,M,K,result,sharkCnt;
-	static int[][] board;
+	static int[][] board; // 상어 번호 기록
 	static int[][][] smell, dirOrder;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
