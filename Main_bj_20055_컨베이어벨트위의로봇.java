@@ -3,23 +3,12 @@ package algo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class Main_bj_20055_컨베이어벨트위의로봇 {
 	
 	static int N,K,result;
-	static int[] a,robot;
-	static int robot_num = 1;
-	static HashMap<Integer,Robot> robotList;
-	static class Robot {
-		int x,num;
-		public Robot(int x, int num) {
-			this.x = x;
-			this.num = num;
-		}
-	}
+	static int[][][] belt;
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,13 +18,14 @@ public class Main_bj_20055_컨베이어벨트위의로봇 {
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 		
-		a = new int[2*N]; // 내구도 표시
-		robot = new int[N]; // 벨트 위 로봇 표시 -> 있다면 로봇 번호 표시 (key)
+		belt = new int[2][N][2]; // 내구도,로봇 표시
 		st = new StringTokenizer(br.readLine());
-		for(int i=0;i<2*N;i++) {
-			a[i] = Integer.parseInt(st.nextToken());
+		for(int i=0;i<N;i++) {
+			belt[0][i][0] = Integer.parseInt(st.nextToken());	
+		}
+		for(int i=N-1;i>=0;i--) {
+			belt[1][i][0] = Integer.parseInt(st.nextToken());
 		} // input end
-		robotList = new HashMap<>();
 
 		solve();
 		
@@ -68,124 +58,81 @@ public class Main_bj_20055_컨베이어벨트위의로봇 {
 		
 		int cnt = 0;
 		
-		for(int num : a) {
-			if(num == 0) cnt++;
-			if(cnt == K) return true;
+		for(int i=0;i<2;i++) {
+			for(int j=0;j<N;j++) {
+				if(belt[i][j][0] == 0) cnt++;
+				if(cnt == K) return true;
+			}
+			if(cnt >= K) return true;
 		}
 		return false;
 	}
 
 	private static void add_robot() {
 		
-		if(a[0] > 0) {
-			a[0]--;
-			robot[0] = robot_num;
-			robotList.put(robot_num, new Robot(0, robot_num));
-			robot_num++;
+		if(belt[0][0][0] > 0) {
+			belt[0][0][0]--;
+			belt[0][0][1] = 1;
 		}
 		
 	}
 
 	private static void move_robot() {
 		
-		if(robotList.size() > 0) {
-			
-			ArrayList<Integer> removeList = new ArrayList<>();
-			
-			for(int i=N-2;i>=0;i--) {
-				if(robot[i] > 0) { // 로봇이 있는 칸이라면
-					int idx = robot[i];
-					
-					if(i+1 == N-1) {
-						if(a[i+1] > 0 && robot[i+1] == 0) {
-							a[i+1]--;
-							removeList.add(idx);
-							robot[i] = 0;
-						}
-					}
-					
-					else if(i+1 < N-1) {
-						if(a[i+1] > 0 && robot[i+1] == 0) {
-							a[i+1]--;
-							robot[i] = 0;
-							robot[i+1] = idx;
-							robotList.get(idx).x++;
-						}
-					}
-				}
-			}
-			
-			if(robot[N-1] > 0) {
-				removeList.add(robot[N-1]);
-				robot[N-1] = 0;
-			}
-			
-//			for(int i : robotList.keySet()) {
-//				int x = robotList.get(i).x; // 현재 로봇의 위치
-//				
-//				if(x+1 == N-1) {
-//					if(a[x+1] > 0 && robot[x+1] == 0) {
-//						a[x+1]--;
-//						removeList.add(i);
-//						robot[x] = 0;
-//					}
-//				}
-//				
-//				else if(x+1 < N-1) {
-//					if(a[x+1] > 0 && robot[x+1] == 0) {
-//						robot[x] = 0;
-//						a[x+1]--;
-//						robotList.get(i).x++;
-//						robot[x+1] = i;
-//					}
-//				}
-//			}
-			
-			for(int i : removeList) {
-				robotList.remove(i);
+		if(belt[0][N-1][1] == 1) {
+			belt[0][N-1][1] = 0;
+		}
+		
+		for(int i=N-2;i>=0;i--) {
+			if(belt[0][i][1] == 1) {
+				if(belt[0][i+1][0] > 0 && belt[0][i+1][1] == 0) {
+					belt[0][i+1][0]--;
+					belt[0][i+1][1] = 1;
+					belt[0][i][1] = 0;
+				}				
 			}
 		}
 		
+		if(belt[0][N-1][1] == 1) {
+			belt[0][N-1][1] = 0;
+		}
 	}
 
 	private static void move_belt() {
 		
-		int temp = a[2*N-1];
-		
-		for(int i=2*N-2;i>=0;i--) {
-			a[i+1] = a[i];
-		}
-		
-		a[0] = temp;
-		
-		// 로봇 한 칸씩 이동
-		if(robotList.size() > 0) {
-			
-			ArrayList<Integer> removeList = new ArrayList<>();
-			
-			for(int i : robotList.keySet()) {
-				int x = robotList.get(i).x; // 현재 로봇의 위
-				robot[x] = 0;
-				
-				if(x == N-2) { // 내리는 위치에 로봇이 도달한다면 로봇 지우기
-					removeList.add(i);
-				}
-				
-				else if(x < N-2) {
-					robotList.get(i).x++;
-					robot[x+1] = i;
-				}
+		// 벨트(내구도) 이동
+		int temp = belt[0][0][0];
+		int tmp = belt[0][0][1];
+
+		// 아랫줄 이동
+		for(int j=0;j<N;j++) {
+			if(j==0) {
+				belt[0][0][0] = belt[1][j][0];
+				belt[0][0][1] = belt[1][j][1];
 			}
-			
-			if(robot[N-1] > 0) {{
-				removeList.add(robot[N-1]);
-			}
-			
-			for(int i : removeList) {
-				robotList.remove(i);
+			else {
+				belt[1][j-1][0] = belt[1][j][0];
+				belt[1][j-1][1] = belt[1][j][1];
 			}
 		}
+
+		// 윗줄 이동
+		for(int j=N-1;j>0;j--) {
+			if(j==N-1) { // 로봇 내리는 위치
+				belt[1][j][0] = belt[0][j][0];
+				belt[1][j][1] = 0; // 로봇 내리니까 0으로 표시
+			}
+			else {
+				belt[0][j+1][0] = belt[0][j][0];
+				belt[0][j+1][1] = belt[0][j][1];
+			}
+		}
+		belt[0][1][0] = temp;
+		belt[0][1][1] = tmp;
 		
+		if(belt[0][N-1][1] == 1) {
+			belt[0][N-1][1] = 0;
+		}
 	}
 
 }
