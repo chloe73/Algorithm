@@ -4,17 +4,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_bj_23290_마법사상어와복제 {
 	
 	static int M,S,sx,sy,result;
-	static ArrayList<Integer>[][] board;
+	static ArrayList<Fish>[][] board;
 	static int[][] smell;
 	static int[] fx = {0,-1,-1,-1,0,1,1,1};
 	static int[] fy = {-1,-1,0,1,1,1,0,-1};
+	//  상 좌 하 우
+	static int[] dx = {0,-1,0,1,0};
+	static int[] dy = {0,0,-1,0,1};
+	static int fishNum;
 	static ArrayList<Fish> fishList, copyList;
 	static class Fish {
 		int x,y,d;
@@ -48,7 +50,7 @@ public class Main_bj_23290_마법사상어와복제 {
 			int d = Integer.parseInt(st.nextToken())-1;
 			
 			fishList.add(new Fish(x, y, d));
-			board[x][y].add(i);
+			board[x][y].add(new Fish(x, y, d));
 		}
 		
 		st = new StringTokenizer(br.readLine());
@@ -71,6 +73,7 @@ public class Main_bj_23290_마법사상어와복제 {
 			// 2. 물고기 이동
 			move_fish();
 			
+			fishNum = Integer.MIN_VALUE;
 			// 3. 상어 연속 3칸 이동
 			move_shark();
 			
@@ -88,9 +91,8 @@ public class Main_bj_23290_마법사상어와복제 {
 		int size = fishList.size();
 		for(Fish f : copyList) {
 			fishList.add(new Fish(f.x, f.y, f.d));
-			board[f.x][f.y].add(size++);
+			board[f.x][f.y].add(new Fish(f.x, f.y, f.d));
 		}
-		
 	}
 
 	private static void remove_smell() {
@@ -100,71 +102,83 @@ public class Main_bj_23290_마법사상어와복제 {
 				if(smell[i][j] > 0) smell[i][j]--;
 			}
 		}
+	}
+	
+	static int[] temp = new int[3];
+	static int[] sharkMove = new int[3];
+	
+	private static void move_shark_dfs(int idx) {
+		// 상어 이동 방향 중복순열로 체크
+		if(idx == 3) {
+			int fNum = check_fish();
+			if(fNum == -1) return;
+			if(fNum > fishNum) {
+				fishNum = fNum;
+				for(int i=0;i<3;i++) {
+					sharkMove[i] = temp[i];
+				}
+			}
+			return;
+		}
 		
+		for(int i=1;i<=4;i++) {
+			temp[idx] = i;
+			move_shark_dfs(idx+1);
+		}
+	}
+
+	private static int check_fish() {
+		int cnt = 0;
+		
+		boolean[][] visited = new boolean[4][4];
+		
+		int x = sx;
+		int y = sy;
+		
+		for(int i=0;i<3;i++) {
+			x += dx[temp[i]];
+			y += dy[temp[i]];
+			
+			if(!isValid(x,y)) return -1;
+			
+			if(visited[x][y]) continue;
+			
+			visited[x][y] = true;
+			cnt += board[x][y].size();
+		}
+		
+		return cnt;
 	}
 
 	private static void move_shark() {
 		// 상어 연속 3칸 이동 : 가장 물고기를 많이 먹는 경로 그 중 사전 순 앞서는 방법으로 이동
 		
-		Queue<int[]> q = new LinkedList<>();
-		//            상 좌 하 우
-		int[] dx = {0,-1,0,1,0};
-		int[] dy = {0,0,-1,0,1};
-		boolean[][] visited = new boolean[4][4];
-		q.add(new int[] {sx,sy,0,0,0});
-		visited[sx][sy] = true;
-		int fishNum = 0;
-		int direction = 0;
-		int[] move_dir = new int[4];
+		move_shark_dfs(0);
+	
+		// 최종 선택된 이동 방향으로 상어이동 + 물고기 먹음 + 냄새 남김 + board 다시 세팅
 		
-		while(!q.isEmpty()) {
-			int[] temp = q.poll();
-			int x = temp[0];
-			int y = temp[1];
-			int cnt = temp[2];
-			int dir = temp[3]; // 이동 방향
-			int fNum = temp[4];
+		for(int i=0;i<3;i++) {
+			sx += dx[sharkMove[i]];
+			sy += dy[sharkMove[i]];
 			
-			if(cnt == 3) {
-				System.out.println(dir+", "+fNum);
-				if(fNum > fishNum) { // 먹는 물고기 수가 더 많은 방법이라면
-					direction = dir;
-				}
-				else if(fNum == fishNum) { // 먹는 물고기 수가 같다면
-//					System.out.println(dir);
-					if(dir < direction) direction = dir;						
-				}
-				continue;
-			}
-			
-			for(int i=1;i<=4;i++) {
-				int nx = x + dx[i];
-				int ny = y + dy[i];
-				
-				if(!isValid(nx,ny)) continue;
-				
-				if(visited[nx][ny]) continue;
-				
-				// 이동방향 추가
-				String s = dir+""+i;
-				int newDir = Integer.parseInt(s);
-				
-				visited[nx][ny] = true;
-				if(board[nx][ny].size() == 0) {
-					q.add(new int[] {nx,ny,cnt+1,newDir,fNum});
-					continue;
-				}
-				else if(board[nx][ny].size() > 0) {
-					int size = board[nx][ny].size();
-					q.add(new int[] {nx,ny,cnt+1,newDir,fNum+size});
-					continue;
-				}
+			if(board[sx][sy].size() > 0) {
+				smell[sx][sy] = 3;
+				board[sx][sy].clear();
 			}
 		}
 		
-		// 선택된 이동 방법으로 상어 이동 + 물고기 먹고 + 냄새 남김
-		System.out.println("==== last direction ====");
-		System.out.println(direction);
+		fishList.clear();
+		
+		for(int i=0;i<4;i++) {
+			for(int j=0;j<4;j++) {
+				if(board[i][j].size() > 0) {
+					for(Fish temp : board[i][j]) {
+						fishList.add(new Fish(temp.x, temp.y, temp.d));
+					}
+				}
+			}
+		}
+
 	}
 
 	private static void move_fish() {
@@ -178,24 +192,34 @@ public class Main_bj_23290_마법사상어와복제 {
 			int ny = temp.y;
 			int cnt = 0;
 			// 물고기 이동 전 이전 위치 삭제
-			board[temp.x][temp.y].remove(Integer.valueOf(i));
-			
-			while (cnt++ < 8) {
+			board[temp.x][temp.y].clear();
+			boolean flag = false;
+			while (cnt++ <= 8) {
 				nx = temp.x + fx[d];
 				ny = temp.y + fy[d];
 				
-				if(isValid(nx,ny) && (nx != sx || ny != sy) && smell[nx][ny] == 0) break;
+				if(isValid(nx,ny) && (nx != sx || ny != sy) && smell[nx][ny] == 0) {
+					flag = true;
+					break;
+				}
 				
 				d = change_dir(d);
+			}
+			
+			if(!flag) {
+				d = temp.d;
+				nx = temp.x;
+				ny = temp.y;
 			}
 			
 			fishList.get(i).x = nx;
 			fishList.get(i).y = ny;
 			fishList.get(i).d = d;
-			// 물고기 이동 후 board에 위치 추가
-			board[nx][ny].add(i);
 		}
 		
+		for(Fish temp : fishList) {
+			board[temp.x][temp.y].add(temp);
+		}
 	}
 
 	private static int change_dir(int d) {
