@@ -59,12 +59,7 @@ public class Main_bj_17142_연구소3 {
 		
 		if(cnt == M) { // 조합이 만들어졌으면 바이러스 퍼뜨리러 이동
 			int num = spread_virus();
-//			System.out.println(num);
 			result = Math.min(result, num);
-//			for(int i: tempVirus) {
-//				System.out.print(i+" ");
-//			}
-//			System.out.println();
 			return;
 		}
 		
@@ -150,8 +145,6 @@ public class Main_bj_17142_연구소3 {
 			int ny = y + dy[d];
 			
 			if(!isValid(nx,ny)) continue;
-			
-			
 		}
 		
 		return true;
