@@ -3,6 +3,7 @@ package algo.bj;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main_bj_1991_트리순회 {
 	
@@ -21,15 +22,16 @@ public class Main_bj_1991_트리순회 {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		
 		int N = Integer.parseInt(br.readLine());
 		
 		for(int i=0;i<N;i++) {
-			String s = br.readLine();
+			st = new StringTokenizer(br.readLine());
 			
-			char root = s.charAt(0);
-			char left = s.charAt(1);
-			char right = s.charAt(2);
+			char root = st.nextToken().charAt(0);
+			char left = st.nextToken().charAt(0);
+			char right = st.nextToken().charAt(0);
 			
 			insert(head, root, left, right);
 		}
