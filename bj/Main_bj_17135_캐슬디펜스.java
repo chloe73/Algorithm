@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -16,15 +15,11 @@ public class Main_bj_17135_캐슬디펜스 {
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
 	static boolean[] isChecked;
-	static class Point implements Comparable<Point>{
+	static class Point {
 		int x,y;
 		public Point(int x, int y) {
 			this.x = x;
 			this.y = y;
-		}
-		@Override
-		public int compareTo(Point o) {
-			return this.y - o.y; //  가장 왼쪽에 있는 적
 		}
 	}
 
@@ -100,7 +95,7 @@ public class Main_bj_17135_캐슬디펜스 {
 		
 		for(int i=N-1;i>=0;i--) {
 			for(int j=0;j<M;j++) {
-				if(i == N-1 || i == 0) copy_board[i][j] = 0;
+				if(i == N-1) copy_board[i][j] = 0;
 				else {
 					copy_board[i+1][j] = copy_board[i][j];
 					copy_board[i][j] = 0;
@@ -119,12 +114,14 @@ public class Main_bj_17135_캐슬디펜스 {
 		for(Point p : castle) {
 			// 각 궁수마다 적 선택 -> bfs
 			
-			PriorityQueue<Point> pq = new PriorityQueue<>();
-			
 			boolean[][] visited = new boolean[N+1][M];
 			Queue<int[]> q = new LinkedList<>();
 			q.add(new int[] {p.x,p.y,0});
 			visited[p.x][p.y] = true;
+			
+			int targetX = -1;
+			int targetY = -1; // 가장 왼쪽에 있는 적
+			int dist = Integer.MAX_VALUE; // 최소 거리
 			
 			while(!q.isEmpty()) {
 				int[] temp = q.poll();
@@ -132,7 +129,25 @@ public class Main_bj_17135_캐슬디펜스 {
 				int y = temp[1];
 				int d = temp[2];
 				
-				if(d >= D) break;
+				if(d > D) break;
+				
+				if(copy_board[x][y] == 1) {
+					
+					if(dist > d) {
+						targetX = x;
+						targetY = y;
+						dist = d;
+					}
+					else if(dist == d) { // 가까운게 여러 개라면
+						if(targetX != -1 && targetY != -1) {
+							if(targetY > y) {
+								targetX = x;
+								targetY = y;
+							}
+						}
+					}
+				}
+				
 				
 				for(int dir = 0;dir<4;dir++) {
 					int nx = x + dx[dir];
@@ -141,9 +156,9 @@ public class Main_bj_17135_캐슬디펜스 {
 					if(nx<0|| ny<0 || nx>N ||ny>=M || visited[nx][ny]) continue;
 					
 					if(d+1 <= D && copy_board[nx][ny] == 1) {
-						pq.add(new Point(nx, ny));
 						visited[nx][ny] = true;
 						q.add(new int[] {nx,ny,d+1});
+						continue;
 					}
 					
 					if(d+1 <= D && copy_board[nx][ny] == 0) {
@@ -153,9 +168,7 @@ public class Main_bj_17135_캐슬디펜스 {
 				}
 			}
 			
-			if(!pq.isEmpty()) {
-				removeList.add(pq.poll());
-			}
+			if(targetX != -1 && targetY != -1) removeList.add(new Point(targetX, targetY));
 		}
 		
 		for(Point p : removeList) {
