@@ -3,6 +3,7 @@ package algo.CodeTree;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -41,6 +42,16 @@ public class Main_ct_포탑_부수기 {
 			return this.power - o.power; // 공격력이 가장 낮은 포탑
 		}
 	}
+	static class Point {
+		int x,y,dist;
+		String num;
+		public Point(int x, int y, int dist, String num) {
+			this.x = x;
+			this.y = y;
+			this.dist = dist;
+			this.num = num;
+		}
+	}
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -70,6 +81,7 @@ public class Main_ct_포탑_부수기 {
 	private static void solve() {
 		int turn = 0;
 		while(turn++ < K) {
+			System.out.println(turn);
 			if(pq.size() == 1) break;
 
 			// 1. 공격자 선정
@@ -165,10 +177,10 @@ public class Main_ct_포탑_부수기 {
 			
 			// 만약 가장자리에 포탄이 떨어졌다면, 위에서의 레이저 이동처럼 포탄의 추가 피해가 반대편 격자에 미치게 됩니다.
 			if(is_out_of_range(nx, ny)) {
-				if(nx>=0 && nx<N && ny == -1) ny = M-1;
-				else if(nx>=0 && nx<N && ny == N) ny = 0;
-				else if(nx == -1 && ny>=0 && ny<M) nx = N-1;
-				else if(nx == N && ny>=0 && ny<M) nx = 0;
+				if(nx == -1) nx = N-1;
+				if(nx == N) nx = 0;
+				if(ny == -1) ny = M-1;
+				if(ny == M) ny = 0;
 			}
 			
 			// 공격자는 해당 공격에 영향을 받지 않습니다.
@@ -187,26 +199,27 @@ public class Main_ct_포탑_부수기 {
 		// 레이저 공격은 공격자의 위치에서 공격 대상 포탑까지의 최단 경로로 공격
 		
 		boolean[][] visited = new boolean[N][M];
-		Queue<int[]> q = new LinkedList<>();
-		q.add(new int[] {attacker.x, attacker.y, 0, 0});
+		Queue<Point> q = new LinkedList<>();
+		q.add(new Point(attacker.x, attacker.y, 0, ""));
 		visited[attacker.x][attacker.y] = true;
 		
 		int distance = Integer.MAX_VALUE; // 이동거리 최소를 구해야 함.
-		int finalRoute = Integer.MAX_VALUE; // 최종 이동경로
+		ArrayList<Integer> finalRoute = new ArrayList<>(); // 최종 이동경로
 		
 		while(!q.isEmpty()) {
-			int[] temp = q.poll();
-			int x = temp[0];
-			int y = temp[1];
-			int dist = temp[2];
-			int route = temp[3];
+			Point temp = q.poll();
+			int x = temp.x;
+			int y = temp.y;
+			int dist = temp.dist;
+			String route = temp.num;
 			
 			if(x == strongestTop.x && y == strongestTop.y) {
 				// 경로의 길이가 똑같은 최단 경로가 2개 이상이라면, 우/하/좌/상의 우선순위대로 먼저 움직인 경로가 선택됩니다.
 //				if(distance == dist) finalRoute = Math.min(finalRoute, route);
 				if(distance > dist) {
 					distance = dist;
-					finalRoute = route;
+					for(int i=0;i<route.length();i++)
+						finalRoute.add(route.charAt(i)-'0');
 				}
 				break;
 			}
@@ -216,10 +229,10 @@ public class Main_ct_포탑_부수기 {
 				int ny = y + dy[d];
 				
 				if(is_out_of_range(nx,ny)) {
-					if(nx>=0 && nx<N && ny == -1) ny = M-1;
-					else if(nx>=0 && nx<N && ny == N) ny = 0;
-					else if(nx == -1 && ny>=0 && ny<M) nx = N-1;
-					else if(nx == N && ny>=0 && ny<M) nx = 0;
+					if(nx == -1) nx = N-1;
+					if(nx == N) nx = 0;
+					if(ny == -1) ny = M-1;
+					if(ny == M) ny = 0;
 				}
 				
 				if(board[nx][ny] == 0) continue;
@@ -228,29 +241,28 @@ public class Main_ct_포탑_부수기 {
 				
 				visited[nx][ny] = true;
 				String s = ""+route+""+d;
-				int num = Integer.parseInt(s);
-				q.add(new int[] {nx,ny,dist+1,num});
+
+				q.add(new Point(nx,ny,dist+1,s));
 			}
 		}
 		
 		// 만약 그러한 경로가 존재하지 않는다면 (2) 포탄 공격을 진행합니다.
-		if(finalRoute == Integer.MAX_VALUE) return false;
+		if(distance == Integer.MAX_VALUE) return false;
 		
-		String direction = "" + finalRoute;
 		int tx = attacker.x;
 		int ty = attacker.y;
 		
 		// 최단 경로가 정해졌으면, 
-		for(int i=0;i<direction.length();i++) {
-			int temp = direction.charAt(i) - '0';
+		for(int i=0;i<finalRoute.size();i++) {
+			int temp = finalRoute.get(i);
 			int nx = tx + dx[temp];
 			int ny = ty + dy[temp];
 			
 			if(is_out_of_range(nx,ny)) {
-				if(nx>=0 && nx<N && ny == -1) ny = M-1;
-				else if(nx>=0 && nx<N && ny == N) ny = 0;
-				else if(nx == -1 && ny>=0 && ny<M) nx = N-1;
-				else if(nx == N && ny>=0 && ny<M) nx = 0;
+				if(nx == -1) nx = N-1;
+				if(nx == N) nx = 0;
+				if(ny == -1) ny = M-1;
+				if(ny == M) ny = 0;
 			}
 			
 			// 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다.
@@ -282,10 +294,7 @@ public class Main_ct_포탑_부수기 {
 	}
 
 	private static boolean is_out_of_range(int r, int c) {
-		if(r>=0 && r<N && c == -1) return true;
-		else if(r>=0 && r<N && c == N) return true;
-		else if(r == -1 && c>=0 && c<M) return true;
-		else if(r == N && c>=0 && c<M) return true;
+		if(r == -1 || r == N || c == -1 || c == M) return true;
 		return false;
 	}
 
