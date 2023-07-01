@@ -47,16 +47,13 @@ public class Main_ct_이상한_다트_게임 {
 	private static void solve() {
 		
 		for(int q=0;q<Q;q++) {
-			System.out.println("======== "+q+" ==========");
 			int x = cmd[q][0]; // 회전하는 원판의 번호가 x의 배수
 			int d = cmd[q][1]; // d의 경우 시계 방향과 반시계 방향
 			int k = cmd[q][2]; // k의 경우 몇 칸을 회전시킬지 결정
-			print();
-			System.out.println("======== rotate() ========");
+
 			// 1. 회전
 			rotate(x, d, k);
-			print();
-			System.out.println("========= 인접 숫자 지운다. ==========");
+
 			// 2. 원판에 수가 남아있으면 인접 숫자 같은 수 지운다.
 			if(check_board()) {
 				int count = 0; // 원판에서 지워지는 수의 개수
@@ -94,7 +91,7 @@ public class Main_ct_이상한_다트_게임 {
 				if(count == 0) {
 					// 정규화란 전체 원판에서 평균보다 큰 수는 1을 빼고, 작은 수는 1을 더해주는 과정을 말합니다. 
 					int avg = get_avg();
-					System.out.println("avg : "+avg);
+
 					// 평균과 같은 수는 따로 변형하지 않으며, 원판에 남은 수가 없을 경우에는 정규화를 진행하지 않습니다. 
 					if(avg == -1) continue;
 					
@@ -116,20 +113,10 @@ public class Main_ct_이상한_다트_게임 {
 					}
 				}
 			}
-			print();
-			System.out.println("========== 이번 턴 끝 ==========");
+
 		}
 		
 		result = get_result();
-	}
-	
-	private static void print() {
-		for(int i=1;i<=N;i++) {
-			for(int j=0;j<M;j++) {
-				System.out.print(board[i][j]+" ");
-			}
-			System.out.println();
-		}
 	}
 	
 	private static int get_result() {
