@@ -67,7 +67,7 @@ public class Main_ct_이상한_다트_게임 {
 						int num = board[i][j];
 						// 0은 이미 지워진 숫자임. 따라서 지울 필요 없음.
 						if(num == 0) continue;
-						int cnt = 0;
+						int cnt = 1;
 						// 인접하다 : 양 옆, 위, 아래
 						for(int dir=0;dir<4;dir++) {
 							int nx = i + dx[dir];
@@ -86,16 +86,19 @@ public class Main_ct_이상한_다트_게임 {
 								visited[nx][ny] = true;
 							}
 						}
-						count += (cnt+1);
+						if(cnt == 1) continue;
+						count += cnt;
 					}
 				}
 				// 만약 1번부터 n번까지의 원판에 지워지는 수가 없는 경우에는 원판 전체에 적힌 수의 평균을 구해서 정규화해줍니다. 
 				if(count == 0) {
 					// 정규화란 전체 원판에서 평균보다 큰 수는 1을 빼고, 작은 수는 1을 더해주는 과정을 말합니다. 
 					int avg = get_avg();
+					System.out.println("avg : "+avg);
 					// 평균과 같은 수는 따로 변형하지 않으며, 원판에 남은 수가 없을 경우에는 정규화를 진행하지 않습니다. 
 					if(avg == -1) continue;
 					
+					// 정규화 진행
 					for(int i=1;i<=N;i++) {
 						for(int j=0;j<M;j++) {
 							if(board[i][j] == 0) continue;
