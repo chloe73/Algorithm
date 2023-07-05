@@ -122,7 +122,7 @@ public class Main_ct_이상한_윷놀이 {
 			int ny = temp.y + dy[temp.d];
 			
 			// 격자판의 범위를 벗어나는 이동일 경우 파란색으로 이동하려는 것과 똑같이 생각하여 처리해줍니다.
-			if(!is_valid(nx,ny)) {
+			if(!is_valid(nx,ny) || board[nx][ny] == 2) {
 				// 현재 가지고 있는 방향을 반대로 바꿔준다.
 				temp.d = change_dir(temp.d);
 				
@@ -185,14 +185,25 @@ public class Main_ct_이상한_윷놀이 {
 			
 			// 이동하려는 칸이 파란색일 경우에는 이동하지 않고 방향을 반대로 전환한 뒤 이동합니다. 
 			// 이동하려는 말에 다른 말들이 쌓여있을 경우에 이동하려는 말만 방향을 반대로 바꿉니다.
-			if(!is_valid(nx,ny) || board[nx][ny] == 2) {
+			if(board[nx][ny] == 2) {
 				// 방향 반대로 전환
 				temp.d = change_dir(temp.d);
 				nx = temp.x + dx[temp.d];
 				ny = temp.y + dy[temp.d];
 				
+				if(!is_valid(nx,ny)) {
+					temp.d = change_dir(temp.d);
+					
+					qBoard[temp.x][temp.y].add(temp.num);
+					
+					if(afterQ.size() > 0) {
+						while(!afterQ.isEmpty()) qBoard[temp.x][temp.y].add(afterQ.poll());
+					}
+					continue;
+				}
+				
 				// 만일 반대 방향으로 전환한 뒤 이동하려는 칸도 파란색이라면 이동하지 않고 가만히 있습니다.
-				if(!is_valid(nx,ny) || board[nx][ny] == 2) {
+				if(board[nx][ny] == 2) {
 					qBoard[temp.x][temp.y].add(temp.num);
 					
 					if(afterQ.size() > 0) {
@@ -221,7 +232,7 @@ public class Main_ct_이상한_윷놀이 {
 					qBoard[nx][ny].add(temp.num);
 				}
 				// 만일 반대 방향으로 전환한 뒤 이동하려는 칸이 흰색이라면
-				else {
+				else if(board[nx][ny] == 0) {
 					qBoard[nx][ny].add(temp.num);
 					temp.x = nx;
 					temp.y = ny;
