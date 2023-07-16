@@ -95,6 +95,13 @@ public class Main_ct_종전 {
 			}
 		}
 		
+		// 우측 하단 구하는 부분 -> 틀린 코드
+//		for(int i=x-k+1;i<N;i++) {
+//			for(int j=y;j<N && !boundary[i][j];j++) {
+//				population[4] += board[i][j];
+//			}
+//		}
+		
 		// 1번 부족은 기울어진 직사각형의 경계와 그 안에 있는 지역을 가지게 됩니다.
 		population[0] = totalSum - population[1] - population[2] - population[3] - population[4];
 		
