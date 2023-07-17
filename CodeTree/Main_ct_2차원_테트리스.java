@@ -60,12 +60,92 @@ public class Main_ct_2차원_테트리스 {
 			check_red();
 			
 			// yellow 연한 부분에 행을 차지하고 있는 칸이 몇칸인지 확인 후, 그 수만큼 가장 끝 행의 타일 사라짐.
+			check_light_yellow();
 			// red 연한 부분에 열을 차지하고 있는 칸이 몇칸인지 확인 후, 그 수만큼 가장 끝 열의 타일 사라짐.
+			check_light_red();
 			// 사라지고 사라진만큼 칸이 땡겨짐.
 			
 		}
 		
 		get_total_sum();
+	}
+
+	private static void check_light_red() {
+		// 여기선 점수 획득 아님.
+		int cnt = 0;
+		
+		for(int j=0;j<2;j++) {
+			boolean flag = false;
+			
+			for(int i=0;i<4;i++) {
+				if(red[i][j]) {
+					flag = true;
+					break;
+				}
+			}
+			
+			if(flag) cnt++;
+		}
+		
+		if(cnt == 0) return;
+		
+		// cnt 개수만큼 맨 밑에 열부터 타일 삭제
+		int col = 5;
+		for(int a=0;a<cnt;a++) {
+			for(int i=0;i<4;i++) {
+				if(!red[i][col]) continue;
+				red[i][col] = false;
+			}
+			col--;
+		}
+		
+		for(int j=5-cnt;j>=0;j--) {
+			for(int i=0;i<4;i++) {
+				if(red[i][j]) {
+					red[i][j+cnt] = true;
+					red[i][j] = false;
+				}
+			}
+		}
+	}
+
+	private static void check_light_yellow() {
+		// 여기선 점수 획득 아님.
+		int cnt = 0;
+		
+		// 타일들이 차지하고 있는 행의 개수만큼 맨 밑 행부터 타일들이 사라진다.
+		for(int i=0;i<2;i++) {
+			boolean flag = false;
+			for(int j=0;j<4;j++) {
+				if(yellow[i][j]) {
+					flag = true;
+					break;
+				}
+			}
+			
+			if(flag) cnt++;
+		}
+		
+		if(cnt == 0) return;
+		
+		// cnt 개수만큼 맨 밑에 행부터 타일 삭제
+		int row = 5;
+		for(int a=0;a<cnt;a++) {
+			for(int j=0;j<4;j++) {
+				if(!yellow[row][j]) continue;
+				yellow[row][j] = false;
+			}
+			row--;
+		}
+		
+		for(int i=5-cnt;i>=0;i--) {
+			for(int j=0;j<4;j++) {
+				if(yellow[i][j]) {
+					yellow[i+cnt][j] = true;
+					yellow[i][j] = false;
+				}
+			}
+		}
 	}
 
 	private static void get_total_sum() {
@@ -157,6 +237,7 @@ public class Main_ct_2차원_테트리스 {
 		}
 	}
 
+	// 타일을 yellow, red board에 놓을 때, 0번째 행과 열부터 확인해야 함.
 	private static void mark_tile(int t, int x, int y) {
 		
 		if(t == 1) {
