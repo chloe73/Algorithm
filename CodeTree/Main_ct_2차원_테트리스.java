@@ -64,7 +64,6 @@ public class Main_ct_2차원_테트리스 {
 			// red 연한 부분에 열을 차지하고 있는 칸이 몇칸인지 확인 후, 그 수만큼 가장 끝 열의 타일 사라짐.
 			check_light_red();
 			// 사라지고 사라진만큼 칸이 땡겨짐.
-			
 		}
 		
 		get_total_sum();
@@ -242,56 +241,106 @@ public class Main_ct_2차원_테트리스 {
 		
 		if(t == 1) {
 			// yellow board
-			for(int i=5;i>=0;i--) {
-				if(!yellow[i][y]) {
+			for(int i=0;i<4;i++) {
+				// 다음 칸에 타일을 채울 수 있으면 기존 칸에 채워진 타일 없애고 다음 칸에 표시하기
+				if(!yellow[i+1][y]) {
+					yellow[i][y] = false;
+					yellow[i+1][y] = true;
+					continue;
+				}
+				
+				// 다음 칸에는 넣을 수 없고 현재 칸에 넣을 수 있다면
+				if(!yellow[i][y] && yellow[i+1][y]) {
 					yellow[i][y] = true;
 					break;
 				}
+				
+				// 현재 칸에 넣을 수 없으면 stop
+				if(yellow[i][y]) break;
 			}
 			
 			// red board
-			for(int j=5;j>=0;j--) {
-				if(!red[x][j]) {
+			for(int j=0;j<4;j++) {
+				// 다음 칸에 타일을 채울 수 있으면 기존 칸에 채워진 타일 없애고 다음 칸에 표시하기
+				if(!red[x][j+1]) {
+					red[x][j] = false;
+					red[x][j+1] = true;
+					continue;
+				}
+				// 다음 칸에는 넣을 수 없고 현재 칸에 넣을 수 있다면
+				if(!red[x][j] && red[x][j+1]) {
 					red[x][j] = true;
 					break;
 				}
+				// 현재 칸에 넣을 수 없으면 stop
+				if(red[x][j]) break;
 			}
 		}
 		else if(t == 2) { // 가로 두칸
 			// yellow board
-			for(int i=5;i>=0;i--) {
-				if(!yellow[i][y] && !yellow[i][y+1]) {
+			for(int i=0;i<4;i++) {
+				// 다음 칸에 타일을 채울 수 있으면 기존 칸에 채워진 타일 없애고 다음 칸에 표시하기
+				if(!yellow[i+1][y] && !yellow[i+1][y+1]) {
+					yellow[i][y] = false;
+					yellow[i][y+1] = false;
+					yellow[i+1][y] = true;
+					yellow[i+1][y+1] = true;
+					continue;
+				}
+				
+				// 다음 칸에는 넣을 수 없고 현재 칸에 넣을 수 있다면
+				if( (!yellow[i][y] && !yellow[i][y+1]) && (yellow[i+1][y] && yellow[i+1][y+1])) {
+					yellow[i][y] = true;
+					yellow[i][y+1] = true;
+					break;
+				}
+				
+				// 현재 칸에 넣을 수 없으면 stop
+				if(yellow[i][y] && yellow[i][y+1]) break;
+			}
+			
+			// red board
+			for(int j=0;j<3;j++) { // 가로 두칸
+				// 다음 칸에 타일을 채울 수 있으면 기존 칸에 채워진 타일 없애고 다음 칸에 표시하기
+				if(!red[x][j] && !red[x][j+1] && !red[x][j+2]) {
+					red[x][j+1] = true;
+					red[x][j+2] = true;
+					continue;
+				}
+				// 다음 칸에는 넣을 수 없고 현재 칸에 넣을 수 있다면
+				if(!red[x][j] && !red[x][j+1] && red[x][j+2]) {
+					red[x][j] = true;
+					red[x][j+1] = true;
+					break;
+				}
+				// 현재 칸에 넣을 수 없으면 stop
+				if(red[x][j]) break;
+			}
+		}
+		else if(t == 3) { // 세로 두칸
+			// yellow board => row
+			for(int i=0;i<3;i++) {
+				// 1) 현재 위치에 타일을 놓을 수 있고 다음 위치에도 타일을 놓을 수 있는 경우
+				if((!yellow[i][y] && !yellow[i+1][y]) && !yellow[i+2][y]) {
+					yellow[i+1][y] = true;
+					yellow[i+2][y] = true;
+					continue;
+				}
+				
+				// 2) 현재 위치에 타일을 놓을 수 있지만 다음 위치에는 타일을 놓을 수 없는 경우
+				if((!yellow[i][y] && !yellow[i+1][y]) && yellow[i+2][y]) {
 					yellow[i][y] = true;
 					yellow[i][y+1] = true;
 					break;
 				}
 			}
 			
-			// red board
-			for(int j=4;j>=0;j--) {
-				if(!red[x][j] && !red[x][j+1]) {
-					red[x][j] = true;
-					red[x][j+1] = true;
-					break;
-				}
-			}
-		}
-		else if(t == 3) { // 세로 두칸
-			// yellow board
-			for(int i=4;i>=0;i--) {
-				if(!yellow[i][y] && !yellow[i+1][y]) {
-					yellow[i][y] = true;
-					yellow[i+1][y] = true;
-					break;
-				}
-			}
-			
-			// red board
-			for(int j=5;j>=0;j--) {
-				if(!red[x][j] && !red[x+1][j]) {
-					red[x][j] = true;
-					red[x+1][j] = true;
-					break;
+			// red board => row
+			for(int j=0;j<4;j++) {
+				
+				// 1) 
+				if((!red[x][j] && !red[x+1][j]) && (!red[x+1][j] && !red[x+1][j+1])) {
+					
 				}
 			}
 		}
