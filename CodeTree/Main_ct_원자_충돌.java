@@ -16,7 +16,6 @@ public class Main_ct_원자_충돌 {
 	static int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
 	static int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
 	static ArrayList<Atom> atomList;
-	static HashSet<int[]> targetList;
 	static Queue<Atom>[][] board;
 	static class Atom {
 		int x,y,d,s,m;
@@ -44,7 +43,6 @@ public class Main_ct_원자_충돌 {
 				board[i][j] = new LinkedList<>();
 			}
 		}
-		targetList = new HashSet<>();
 		
 		atomList = new ArrayList<>();
 		for(int i=0;i<M;i++) {
@@ -72,65 +70,63 @@ public class Main_ct_원자_충돌 {
 			move_atom();
 
 			// 이동이 모두 끝난 뒤에 하나의 칸에 2개 이상의 원자가 있는 경우에는 다음과 같은 합성이 일어납니다.
-			for(int[] target : targetList) {
-				int x = target[0];
-				int y = target[1];
-				
-				if(board[x][y].size() == 0) continue;
-				
-				// a. 같은 칸에 있는 원자들은 각각의 질량과 속력을 모두 합한 하나의 원자로 합쳐집니다.
-				int cnt = board[x][y].size();
-				int sum_m = 0;
-				int sum_s = 0;
-				int sum_d = 0;
-				
-				// b. 이후 합쳐진 원자는 4개의 원자로 나눠집니다.
-				while(!board[x][y].isEmpty()) {
-					Atom temp = board[x][y].poll();
+			for(int x=0;x<N;x++) {
+				for(int y=0;y<N;y++) {
 					
-					sum_m += temp.m;
-					sum_s += temp.s;
+					if(board[x][y].size() < 2) continue;
 					
-					// 짝 + 짝 = 짝
-					// 홀 + 홀 = 짝
-					// 짝 + 홀 = 홀
-					// 홀 + 짝 = 홀
-					sum_d += temp.d;
+					// a. 같은 칸에 있는 원자들은 각각의 질량과 속력을 모두 합한 하나의 원자로 합쳐집니다.
+					int cnt = board[x][y].size();
+					int sum_m = 0;
+					int sum_s = 0;
+					int sum_d = 0;
+					
+					// b. 이후 합쳐진 원자는 4개의 원자로 나눠집니다.
+					while(!board[x][y].isEmpty()) {
+						Atom temp = board[x][y].poll();
+						
+						sum_m += temp.m;
+						sum_s += temp.s;
+						
+						// 짝 + 짝 = 짝
+						// 홀 + 홀 = 짝
+						// 짝 + 홀 = 홀
+						// 홀 + 짝 = 홀
+						sum_d += temp.d;
+					}
+					
+					// 질량은 합쳐진 원자의 질량에 5를 나눈 값입니다.
+					int mm = sum_m / 5;
+					
+					// 속력은 합쳐진 원자의 속력에 합쳐진 원자의 개수를 나눈 값입니다.
+					int ss = sum_s / cnt;
+					
+					// 방향은 합쳐지는 원자의 방향이 모두 상하좌우 중 하나이거나 대각선 중에 하나이면, 각각 상하좌우의 방향을 가지며 그렇지 않다면 대각선 네 방향의 값을 가집니다.
+					int[] dir = new int[4];
+					if(sum_d % 2 == 0) {
+						dir[0] = 0;
+						dir[1] = 2;
+						dir[2] = 4;
+						dir[3] = 6;
+					}
+					else {
+						dir[0] = 1;
+						dir[1] = 3;
+						dir[2] = 5;
+						dir[3] = 7;
+					}
+					
+					// d. 질량이 0인 원소는 소멸됩니다.
+					if(mm <= 0) continue;
+					
+					// c. 나누어진 원자들은 모두 해당 칸에 위치하고 질량과 속력, 방향은 다음 기준을 따라 결정됩니다.
+					for(int i=0;i<4;i++) {
+						board[x][y].add(new Atom(x, y, mm, ss, dir[i]));
+					}
+					
+					
 				}
-				
-				// 질량은 합쳐진 원자의 질량에 5를 나눈 값입니다.
-				int mm = sum_m / 5;
-				
-				// 속력은 합쳐진 원자의 속력에 합쳐진 원자의 개수를 나눈 값입니다.
-				int ss = sum_s / cnt;
-				
-				// 방향은 합쳐지는 원자의 방향이 모두 상하좌우 중 하나이거나 대각선 중에 하나이면, 각각 상하좌우의 방향을 가지며 그렇지 않다면 대각선 네 방향의 값을 가집니다.
-				int[] dir = new int[4];
-				if(sum_d % 2 == 0) {
-					dir[0] = 0;
-					dir[1] = 2;
-					dir[2] = 4;
-					dir[3] = 6;
-				}
-				else {
-					dir[0] = 1;
-					dir[1] = 3;
-					dir[2] = 5;
-					dir[3] = 7;
-				}
-				
-				// d. 질량이 0인 원소는 소멸됩니다.
-				if(mm == 0) continue;
-				
-				// c. 나누어진 원자들은 모두 해당 칸에 위치하고 질량과 속력, 방향은 다음 기준을 따라 결정됩니다.
-				for(int i=0;i<4;i++) {
-					board[x][y].add(new Atom(x, y, mm, ss, dir[i]));
-				}
-				
-				
 			}
-
-			targetList = new HashSet<>();
 			
 			update_atom();
 
@@ -141,21 +137,6 @@ public class Main_ct_원자_충돌 {
 			for(int j=0;j<N;j++) {
 				while(!board[i][j].isEmpty()) {
 					result += board[i][j].poll().m;
-				}
-			}
-		}
-	}
-	
-	private static void print() {
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				if(board[i][j].size() == 0) System.out.print("- ");
-				else {
-					int size = board[i][j].size();
-					while(size-- > 0) {
-						
-						
-					}
 				}
 			}
 		}
@@ -187,8 +168,6 @@ public class Main_ct_원자_충돌 {
 			int ny = (N + a.y + dy[a.d] * (a.s % N)) % N;
 			
 			board[nx][ny].add(new Atom(nx, ny, a.m, a.s, a.d));
-			
-			if(board[nx][ny].size() > 1) targetList.add(new int[] {nx,ny});
 			
 			a.x = nx;
 			a.y = ny;
