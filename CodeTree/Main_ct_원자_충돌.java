@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_ct_원자_충돌 {
-	
+
 	static int N,M,K,result;
 	// 					↑, ↗, →, ↘, ↓, ↙, ←, ↖
 	static int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -79,7 +78,9 @@ public class Main_ct_원자_충돌 {
 					int cnt = board[x][y].size();
 					int sum_m = 0;
 					int sum_s = 0;
-					int sum_d = 0;
+					// int sum_d = 0;
+					int flag_d = -1; // 주어진 방향이 홀수인지 짝수인지 체크하기 위한 변수
+					boolean flag = true; // 모두 홀수이거나 짝수인 경우 true
 					
 					// b. 이후 합쳐진 원자는 4개의 원자로 나눠집니다.
 					while(!board[x][y].isEmpty()) {
@@ -92,7 +93,20 @@ public class Main_ct_원자_충돌 {
 						// 홀 + 홀 = 짝
 						// 짝 + 홀 = 홀
 						// 홀 + 짝 = 홀
-						sum_d += temp.d;
+						// sum_d += temp.d;
+						
+						// 방향 홀수인지 짝수인지 체크
+						if(temp.d % 2 == 0) {
+							if(flag_d == -1) flag_d = 0;
+							else {
+								if(flag_d != 0) flag = false;
+							}
+						} else {
+							if(flag_d == -1) flag_d = 1;
+							else {
+								if(flag_d != 1) flag = false;
+							}
+						}
 					}
 					
 					// 질량은 합쳐진 원자의 질량에 5를 나눈 값입니다.
@@ -103,7 +117,7 @@ public class Main_ct_원자_충돌 {
 					
 					// 방향은 합쳐지는 원자의 방향이 모두 상하좌우 중 하나이거나 대각선 중에 하나이면, 각각 상하좌우의 방향을 가지며 그렇지 않다면 대각선 네 방향의 값을 가집니다.
 					int[] dir = new int[4];
-					if(sum_d % 2 == 0) {
+					if(flag) {
 						dir[0] = 0;
 						dir[1] = 2;
 						dir[2] = 4;
@@ -135,8 +149,10 @@ public class Main_ct_원자_충돌 {
 		// k초가 될 때, 남아있는 원자의 질량 합
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++) {
-				while(!board[i][j].isEmpty()) {
-					result += board[i][j].poll().m;
+				if(board[i][j].size() > 0) {
+					while(!board[i][j].isEmpty()) {
+						result += board[i][j].poll().m;
+					}
 				}
 			}
 		}
