@@ -40,279 +40,248 @@ public class Main_ct_청소는_즐거워 {
 	}
 
 	private static void solve() {
-		
-		while(!is_end(tx,ty)) {
+		int turn = 0;
+		int cnt = 1;
+		outer:while(!is_end(tx,ty)) {
+			turn++;
+			int nx = tx;
+			int ny = ty;
 			// 현재 위치에서 현재 방향으로 한 칸 이동
-			int nx = tx + dx[td];
-			int ny = ty + dy[td];
-			
-			clean(nx,ny);
+			for(int i=0;i<cnt;i++) {
+//				System.out.println(tx+", "+ty);
+				if(is_end(tx, ty)) break outer;
+				
+				nx += dx[td];
+				ny += dy[td];
+
+				clean(nx,ny);
+
+				tx = nx;
+				ty = ny;
+			}
 			
 			// 방향 바뀜.
 			td = change_dir(td);
-			tx = nx;
-			ty = ny;
+			if(turn % 2 == 0) cnt++;
 		}
 		
 	}
 	
 	private static void clean(int nx, int ny) {
 		
-		int[][] plus = new int[N][N];
 		int curr = board[nx][ny];
 		board[nx][ny] = 0;
-		int alpha = curr;
 		int num1 = curr * 1 / 100;
 		int num2 = curr * 2 / 100;
 		int num5 = curr * 5 / 100;
 		int num7 = curr * 7 / 100;
 		int num10 = curr * 10 / 100;
+		int alpha = curr - (2*num1 + 2*num2 + 2*num7 + 2*num10 + num5);
 		
 		if(td == 0) {
 			if(is_valid(nx-1,ny)) {
-				plus[nx-1][ny] = num7;
-				alpha -= num7;
+				board[nx-1][ny] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx+1,ny)) {
-				plus[nx+1][ny] = num7;
-				alpha -= num7;
+				board[nx+1][ny] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx-2,ny)) {
-				plus[nx-2][ny] = num2;
-				alpha -= num2;
+				board[nx-2][ny] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx+2,ny)) {
-				plus[nx+2][ny] = num2;
-				alpha -= num2;
+				board[nx+2][ny] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx-1,ny+1)) {
-				plus[nx-1][ny+1] = num1;
-				alpha -= num1;
+				board[nx-1][ny+1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx+1,ny+1)) {
-				plus[nx+1][ny+1] = num1;
-				alpha -= num1;
+				board[nx+1][ny+1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx-1,ny-1)) {
-				plus[nx-1][ny-1] = num10;
-				alpha -= num10;
+				board[nx-1][ny-1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx+1,ny-1)) {
-				plus[nx+1][ny-1] = num10;
-				alpha -= num10;
+				board[nx+1][ny-1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx,ny-2)) {
-				plus[nx][ny-2] = num5;
-				alpha -= num5;
+				board[nx][ny-2] += num5;
 			}
 			else result += num5;
 			
 			if(is_valid(nx,ny-1))
-				plus[nx][ny-1] = alpha;
+				board[nx][ny-1] += alpha;
 			else result += alpha;
 		}
 		
 		else if(td == 1) {
 			if(is_valid(nx,ny-1)) {
-				plus[nx][ny-1] = num7;
-				alpha -= num7;
+				board[nx][ny-1] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx,ny+1)) {
-				plus[nx][ny+1] = num7;
-				alpha -= num7;
+				board[nx][ny+1] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx,ny-2)) {
-				plus[nx][ny-2] = num2;
-				alpha -= num2;
+				board[nx][ny-2] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx,ny+2)) {
-				plus[nx][ny+2] = num2;
-				alpha -= num2;
+				board[nx][ny+2] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx-1,ny-1)) {
-				plus[nx-1][ny-1] = num1;
-				alpha -= num1;
+				board[nx-1][ny-1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx-1,ny+1)) {
-				plus[nx-1][ny+1] = num1;
-				alpha -= num1;
+				board[nx-1][ny+1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx+1,ny-1)) {
-				plus[nx+1][ny-1] = num10;
-				alpha -= num10;
+				board[nx+1][ny-1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx+1,ny+1)) {
-				plus[nx+1][ny+1] = num10;
-				alpha -= num10;
+				board[nx+1][ny+1] += num10;
 			}
 			else result += num10;
 			
-			if(is_valid(nx-2,ny)) {
-				plus[nx-2][ny] = num5;
-				alpha -= num5;
+			if(is_valid(nx+2,ny)) {
+				board[nx+2][ny] += num5;
 			}
 			else result += num5;
 			
-			if(is_valid(nx-1,ny))
-				plus[nx-1][ny] = alpha;
+			if(is_valid(nx+1,ny))
+				board[nx+1][ny] += alpha;
 			else result += alpha;
 		}
 		
 		else if(td == 2) {
 			if(is_valid(nx-1,ny)) {
-				plus[nx-1][ny] = num7;
-				alpha -= num7;
+				board[nx-1][ny] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx+1,ny)) {
-				plus[nx+1][ny] = num7;
-				alpha -= num7;
+				board[nx+1][ny] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx-2,ny)) {
-				plus[nx-2][ny] = num2;
-				alpha -= num2;
+				board[nx-2][ny] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx+2,ny)) {
-				plus[nx+2][ny] = num2;
-				alpha -= num2;
+				board[nx+2][ny] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx-1,ny-1)) {
-				plus[nx-1][ny-1] = num1;
-				alpha -= num1;
+				board[nx-1][ny-1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx+1,ny-1)) {
-				plus[nx+1][ny-1] = num1;
-				alpha -= num1;
+				board[nx+1][ny-1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx-1,ny+1)) {
-				plus[nx-1][ny+1] = num10;
-				alpha -= num10;
+				board[nx-1][ny+1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx+1,ny+1)) {
-				plus[nx+1][ny+1] = num10;
-				alpha -= num10;
+				board[nx+1][ny+1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx,ny+2)) {
-				plus[nx][ny+2] = num5;
-				alpha -= num5;
+				board[nx][ny+2] += num5;
 			}
 			else result += num5;
 			
 			if(is_valid(nx,ny+1))
-				plus[nx][ny+1] = alpha;
+				board[nx][ny+1] += alpha;
 			else result += alpha;
 		}
 		
 		else {
 			if(is_valid(nx,ny-1)) {
-				plus[nx][ny-1] = num7;
-				alpha -= num7;
+				board[nx][ny-1] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx,ny+1)) {
-				plus[nx][ny+1] = num7;
-				alpha -= num7;
+				board[nx][ny+1] += num7;
 			}
 			else result += num7;
 			
 			if(is_valid(nx,ny-2)) {
-				plus[nx][ny-2] = num2;
-				alpha -= num2;
+				board[nx][ny-2] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx,ny+2)) {
-				plus[nx][ny+2] = num2;
-				alpha -= num2;
+				board[nx][ny+2] += num2;
 			}
 			else result += num2;
 			
 			if(is_valid(nx+1,ny-1)) {
-				plus[nx+1][ny-1] = num1;
-				alpha -= num1;
+				board[nx+1][ny-1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx+1,ny+1)) {
-				plus[nx+1][ny+1] = num1;
-				alpha -= num1;
+				board[nx+1][ny+1] += num1;
 			}
 			else result += num1;
 			
 			if(is_valid(nx-1,ny-1)) {
-				plus[nx-1][ny-1] = num10;
-				alpha -= num10;
+				board[nx-1][ny-1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx-1,ny+1)) {
-				plus[nx-1][ny+1] = num10;
-				alpha -= num10;
+				board[nx-1][ny+1] += num10;
 			}
 			else result += num10;
 			
 			if(is_valid(nx-2,ny)) {
-				plus[nx-2][ny] = num5;
-				alpha -= num5;
+				board[nx-2][ny] += num5;
 			}
 			else result += num5;
 			
 			if(is_valid(nx-1,ny))
-				plus[nx-1][ny] = alpha;
+				board[nx-1][ny] += alpha;
 			else result += alpha;
 		}
-		
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				if(plus[i][j] > 0)	board[i][j] += plus[i][j];
-			}
-		}
+
 	}
 
 	private static boolean is_valid(int r, int c) {
