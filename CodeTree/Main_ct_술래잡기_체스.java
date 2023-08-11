@@ -54,7 +54,8 @@ public class Main_ct_술래잡기_체스 {
 		int[][] tempBoard = new int[4][4];
 		
 		for(int i : thiefMap.keySet()) {
-			tempThief.put(i, thiefMap.get(i));
+			Thief t = thiefMap.get(i);
+			tempThief.put(i, new Thief(t.p, t.d, t.x, t.y));
 		}
 		
 		for(int i=0;i<4;i++) {
@@ -73,54 +74,48 @@ public class Main_ct_술래잡기_체스 {
 		// 도둑말은 번호가 작은 순서대로 본인이 가지고 있는 이동 방향대로 이동합니다.
 		for(int i : tempThief.keySet()) {
 			// 한 번의 이동에 한 칸을 이동하며, 
-			System.out.println("keySet : "+i);
+//			System.out.println("keySet : "+i);
 			int x = tempThief.get(i).x;
 			int y = tempThief.get(i).y;
 			int d = tempThief.get(i).d;
 			
 			// 도둑 말은 이동할 수 있을 때까지 45도 반시계 회전하며 갈 수 있는 칸을 탐색합니다.
-			int nx = x;
-			int ny = y;
-			boolean flag = false;
-			for(int k=0;k<8;k++) {
-				nx = x + dx[d];
-				ny = y + dy[d];
-				
-				// 술래말이 있는 칸이나 격자를 벗어나는 곳으로는 이동할 수 없습니다.
-				if(!is_valid(nx,ny) || (nx == tx && ny == ty)) {
-					d = change_dir(d);
-					continue;
-				}
-				
-				// 빈 칸이나 다른 도둑말이 있는 칸은 이동할 수 있는 칸이고 
-				if(tempBoard[nx][ny] == 0 || (tempBoard[nx][ny] > 0 && tempBoard[nx][ny] <= 16)) {
-					flag = true;
-					break;
-				}
-				
+			int nx = x + dx[d];
+			int ny = y + dy[d];
+			int nd = d;
+
+			while(!is_valid(nx,ny) || (nx == tx && ny == ty)) {
+				nd = change_dir(nd);
+				nx = x + dx[nd];
+				ny = y + dy[nd];
 			}
 			
 			// 만약 이동할 수 있는 칸이 없다면 이동하지 않습니다.
 			// 그 이외의 경우에는 칸을 이동합니다.
-			if(flag) {
+			
+			// 만약 해당 칸에 다른 도둑말이 있다면 해당 말과 위치를 바꿉니다.
+			if(tempBoard[nx][ny] > 0) {
+				int temp = tempBoard[nx][ny];
+				tempThief.get(temp).x = x;
+				tempThief.get(temp).y = y;
+				
 				tempThief.get(i).x = nx;
 				tempThief.get(i).y = ny;
-				tempThief.get(i).d = d;
+				tempThief.get(i).d = nd;
 				
-				// 만약 해당 칸에 다른 도둑말이 있다면 해당 말과 위치를 바꿉니다.
-				if(tempBoard[nx][ny] > 0 && tempBoard[nx][ny] <= 16) {
-					int temp = tempBoard[nx][ny];
-					tempThief.get(temp).x = x;
-					tempThief.get(temp).y = y;
-					tempBoard[nx][ny] = i;
-					tempBoard[x][y] = temp;
-				}
-				
-				else if(tempBoard[nx][ny] == 0) {
-					tempBoard[nx][ny] = i;
-					tempBoard[x][y] = 0;
-				}
+				tempBoard[nx][ny] = i;
+				tempBoard[x][y] = temp;
 			}
+			
+			else {
+				tempThief.get(i).x = nx;
+				tempThief.get(i).y = ny;
+				tempThief.get(i).d = nd;
+				
+				tempBoard[nx][ny] = i;
+				tempBoard[x][y] = 0;
+			}
+			
 		}
 		
 		// 술래말 이동
