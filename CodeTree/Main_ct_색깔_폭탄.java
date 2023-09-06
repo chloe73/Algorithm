@@ -112,48 +112,44 @@ public class Main_ct_색깔_폭탄 {
 		
 		board = copy;
 	}
-
+	
 	private static void gravity() {
-		
-		for(int i=N-2;i>=0;i--) {
-			for(int j=0;j<N;j++) {
-				if(board[i][j] >= 0 && board[i][j] <= M) {
-					int row = i;
-					int cnt = 0;
-					
-					while(++row < N) {
-						if(board[row][j] == -7) cnt++;
-						else if(board[row][j] == -1 || (board[row][j] >= 0 && board[i][j] <= M)) break;
-					}
-					if(cnt > 0) {
-						board[i+cnt][j] = board[i][j];
-						board[i][j] = -7;
-						
-					}
-				}
-			}
-		}
-		
+		int[][] temp = new int[N][N];
+
 		for(int j=0;j<N;j++) {
-			int cnt = 0;
+			int lastIdx = N-1;
 			for(int i=N-1;i>=0;i--) {
+				if(board[i][j] == 0) continue;
 				if(board[i][j] == -1) {
-					cnt = 0;
-					continue;
+					lastIdx = i;
 				}
-				if(board[i][j] == 0) {
-					cnt++;
-					continue;
-				}
-				if(board[i][j] >= 1 && board[i][j] <= M) {
-					if(cnt > 0) {
-						board[i+cnt][j] = board[i][j];
-						board[i][j] = 0;
-					}
-				}
+				temp[lastIdx--][j] = board[i][j];
 			}
 		}
+		board = temp;
 	}
+
+//	private static void gravity() {
+//		for(int j=0;j<N;j++) {
+//			int cnt = 0;
+//			for(int i=N-1;i>=0;i--) {
+//				if(board[i][j] == -1) {
+//					cnt = 0;
+//					continue;
+//				}
+//				if(board[i][j] == 0) {
+//					cnt++;
+//					continue;
+//				}
+//				if(board[i][j] >= 1 && board[i][j] <= M) {
+//					if(cnt > 0) {
+//						board[i+cnt][j] = board[i][j];
+//						board[i][j] = 0;
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	private static int remove_bomb() {
 		Point target = pq.poll();
