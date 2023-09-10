@@ -121,12 +121,17 @@ public class Main_ct_나무_타이쿤 {
 		
 		int[][] plus = new int[N][N];
 		
+		// 2. 특수 영양제를 이동 시킨 후 해당 땅에 특수 영양제를 투입합니다.
 		for(Point temp : nList) {
 			board[temp.x][temp.y]++;
-			
-			// 대각선 확인 : 2,4,6,8
+		}
+		
+		// 3. 특수 영양제를 투입한 리브로수의 대각선으로 인접한 방향에 높이가 1 이상인 리브로수가 있는 만큼 높이가 더 성장합니다. 
+		// 대각선으로 인접한 방향이 격자를 벗어나는 경우에는 세지 않습니다.
+		for(Point temp : nList) {
 			int d = 2;
 			int cnt = 0;
+			// 대각선 확인 : 2,4,6,8
 			while(d <= 8) {
 				
 				int nx = temp.x + dx[d];
@@ -151,8 +156,6 @@ public class Main_ct_나무_타이쿤 {
 
 	private static void move(int d, int p) {
 		
-//		ArrayList<Point> renewList = new ArrayList<>();
-		
 		for(Point temp : nList) {
 			int nx = temp.x;
 			int ny = temp.y;
@@ -166,7 +169,7 @@ public class Main_ct_나무_타이쿤 {
 				nx = arr[0];
 				ny = arr[1];
 				
-				if(arr[0] != -7) continue;
+//				if(arr[0] != -7) continue;
 			}
 			
 			// 구름 d 방향으로 s칸만큼 이동
@@ -177,8 +180,6 @@ public class Main_ct_나무_타이쿤 {
 			temp.y = ny;
 		}
 		
-//		nList.clear();
-//		nList = renewList;
 	}
 
 	private static int[] is_valid(int r, int c) {
