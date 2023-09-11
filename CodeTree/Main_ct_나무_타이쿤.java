@@ -59,15 +59,6 @@ public class Main_ct_나무_타이쿤 {
 		 
 		 System.out.println(result);
 	}
-	
-	private static void print() {
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				System.out.print(board[i][j]+" ");
-			}
-			System.out.println();
-		}
-	}
 
 	private static void solve() {
 		for(int[] turn : cmdList) {
@@ -82,10 +73,6 @@ public class Main_ct_나무_타이쿤 {
 			// 특수 영양제를 투입한 리브로수를 제외하고 높이가 2 이상인 리브로수는 
 			// 높이 2를 베어서 잘라낸 리브로수로 특수 영양제를 사고, 해당 위치에 특수 영양제를 올려둡니다.
 			cut_and_renewal();
-			
-			
-			System.out.println("==================");
-			print();
 		}
 		
 		for(int i=0;i<N;i++) {
