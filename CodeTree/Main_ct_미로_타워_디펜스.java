@@ -67,8 +67,6 @@ public class Main_ct_미로_타워_디펜스 {
 		
 		init_mList();
 		
-		print();
-		
 		solve();
 		
 		System.out.println(result);
@@ -119,12 +117,10 @@ public class Main_ct_미로_타워_디펜스 {
 	}
 	
 	private static void print() {
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				System.out.print(numBoard[i][j]+" ");
-			}
-			System.out.println();
+		for(int i=0;i<mList.size();i++) {
+			System.out.print(mList.get(i)+", ");
 		}
+		System.out.println();
 	}
 
 	private static void solve() {
@@ -132,9 +128,8 @@ public class Main_ct_미로_타워_디펜스 {
 		for(int[] temp : cmdList) {
 			// 1. 플레이어는 상하좌우 방향 중 주어진 공격 칸 수만큼 몬스터를 공격하여 없앨 수 있습니다.
 			remove_monster(temp[0], temp[1]);
-			
+
 			// 2. 비어있는 공간만큼 몬스터는 앞으로 이동하여 빈 공간을 채웁니다.
-			fill_board();
 			
 			// 3. 이때 몬스터의 종류가 4번 이상 반복하여 나오면 해당 몬스터 또한 삭제됩니다.
 			// 해당 몬스터들은 동시에 사라집니다.
@@ -143,13 +138,96 @@ public class Main_ct_미로_타워_디펜스 {
 			while(is_possible()) {
 				remove_and_fill();
 			}
+
+			// 4. 삭제가 끝난 다음에는 몬스터를 차례대로 나열했을 때 같은 숫자끼리 짝을 지어줍니다.
+			// 이후 각각의 짝을 (총 개수, 숫자의 크기)로 바꾸어서 다시 미로 속에 집어넣습니다.
+			make_set();
 			
+//			print();
 		}
 	}
 	
-	private static void remove_and_fill() {
-		// TODO Auto-generated method stub
+	private static void make_set() {
 		
+		ArrayList<Integer> renewalList = new ArrayList<>();
+		
+		int temp = mList.get(0);
+		int cnt = 1;
+		
+		for(int i=1;i<mList.size();i++) {
+			int num = mList.get(i);
+			
+			if(temp == num) {
+				cnt++;
+				continue;
+			}
+			
+			if(temp != num) {
+				renewalList.add(cnt);
+				renewalList.add(temp);
+				
+				temp = num;
+				cnt = 1;
+			}
+		}
+		
+		renewalList.add(cnt);
+		renewalList.add(temp);
+		
+		mList.clear();
+		mList = renewalList;
+	}
+
+	private static void remove_and_fill() {
+		
+		// 4번 이상 나오는 몬스터
+		// 인덱스
+		ArrayList<Integer> removeList = new ArrayList<>();
+		
+		int temp = mList.get(0);
+		int cnt = 1;
+		for(int i=1;i<mList.size();i++) {
+			int num = mList.get(i);
+			
+			if(temp == num) {
+				cnt++;
+				continue;
+			}
+			
+			if(temp != num) {
+				
+				if(cnt >= 4) {
+					int index = i-1;
+					while(cnt-- > 0) {
+						result += mList.get(index);
+						removeList.add(index--);
+					}
+				}
+				
+				temp = num;
+				cnt = 1;
+				continue;
+			}
+		}
+		
+		if(cnt >= 4) {
+			int index = mList.size()-1;
+			while(cnt-- > 0) {
+				result += mList.get(index);
+				removeList.add(index--);
+			}
+		}
+		
+		ArrayList<Integer> renewalList = new ArrayList<>();
+		
+		for(int i=0;i<mList.size();i++) {
+			if(removeList.contains(i)) continue;
+			
+			renewalList.add(mList.get(i));
+		}
+		
+		mList.clear();
+		mList = renewalList;
 	}
 
 	private static boolean is_possible() {
@@ -173,13 +251,9 @@ public class Main_ct_미로_타워_디펜스 {
 			}
 		}
 		
+		if(cnt >= 4) return true;
+		
 		return false;
-	}
-
-	private static void fill_board() {
-		
-		
-		
 	}
 
 	private static void remove_monster(int d, int p) {
@@ -193,14 +267,15 @@ public class Main_ct_미로_타워_디펜스 {
 			x += dx[d];
 			y += dy[d];
 			
-			if(board[x][y].size() == 0) continue;
+//			if(board[x][y].size() == 0) continue;
 			
 			removeList.add(numBoard[x][y]);
 			
-			Monster temp = board[x][y].poll();
+//			Monster temp = board[x][y].poll();
 			
-			result += temp.num;
-			board[x][y].clear();
+			if(numBoard[x][y] < mList.size())
+				result += mList.get(numBoard[x][y]);
+//			board[x][y].clear();
 		}
 		
 		ArrayList<Integer> renewalList = new ArrayList<>();
