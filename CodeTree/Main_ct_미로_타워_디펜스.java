@@ -13,22 +13,12 @@ public class Main_ct_미로_타워_디펜스 {
 	static int N,M,result;
 	static int tx,ty;
 	static int[][] numBoard;
-	static Queue<Monster>[][] board;
+	static int[][] board;
 	// 0번부터 3번까지 각각 → ↓ ← ↑
 	static int[] dx = {0,1,0,-1};
 	static int[] dy = {1,0,-1,0};
 	static ArrayList<int[]> cmdList;
 	static ArrayList<Integer> mList; 
-	static ArrayList<Integer> removeList;
-	static class Monster {
-		int num;
-		int x,y;
-		public Monster(int num, int x, int y){
-			this.num = num;
-			this.x = x;
-			this.y = y;
-		}
-	}
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -38,15 +28,14 @@ public class Main_ct_미로_타워_디펜스 {
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 
-		board = new LinkedList[N][N];
+		board = new int[N][N];
 		numBoard = new int[N][N];
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++) {
-				board[i][j] = new LinkedList<>();
 				int num = Integer.parseInt(st.nextToken());
 				if(num == 0) continue;
-				board[i][j].add(new Monster(num, i, j));
+				board[i][j] =num;
 			}
 		}
 		cmdList = new ArrayList<>();
@@ -93,19 +82,19 @@ public class Main_ct_미로_타워_디펜스 {
 				numBoard[x][y] = number++;
 				
 				if(x == 0 && y == 0) {
-					if(board[x][y].size() > 0) {
-						Monster temp = board[x][y].peek();
+					if(board[x][y] > 0) {
+						int num = board[x][y];
 						
-						mList.add(temp.num);
+						mList.add(num);
 					}
 					break outer;
 				}
 				
-				if(board[x][y].size() == 0) continue;
+				if(board[x][y] == 0) continue;
 				
-				Monster temp = board[x][y].peek();
+				int num = board[x][y];
 				
-				mList.add(temp.num);
+				mList.add(num);
 			}
 			
 			d = change_dir(d);
@@ -261,7 +250,7 @@ public class Main_ct_미로_타워_디펜스 {
 		int x = tx;
 		int y = ty;
 		
-		removeList = new ArrayList<>();
+		ArrayList<Integer> removeList = new ArrayList<>();
 		
 		for(int i=0;i<p;i++) {
 			x += dx[d];
