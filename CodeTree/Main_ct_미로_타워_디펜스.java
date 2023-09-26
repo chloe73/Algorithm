@@ -234,6 +234,10 @@ public class Main_ct_미로_타워_디펜스 {
 			}
 		}
 		
+		if(cnt >= 4) {
+			q.add(new int[] {monsterList.size()-1,cnt});
+		}
+		
 		ArrayList<Monster> removeList = new ArrayList<>();
 		// 한 번에 삭제할 monster 정보
 		while(!q.isEmpty()) {
