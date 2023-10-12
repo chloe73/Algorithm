@@ -29,7 +29,7 @@ public class Main_bj_2468_안전_영역 {
 			}
 		} // input end
 		
-		result = 0;
+		result = 1;
 		
 		solve();
 		
