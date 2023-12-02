@@ -14,14 +14,13 @@ public class Main_bj_1018_체스판_다시_칠하기 {
  
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
  
-		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		StringTokenizer st = new StringTokenizer(br.readLine());
  
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
  
 		arr = new boolean[N][M];
 		
- 
 		// 배열 입력 
 		for (int i = 0; i < N; i++) {
 			String str = br.readLine();
