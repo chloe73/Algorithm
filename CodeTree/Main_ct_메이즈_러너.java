@@ -55,6 +55,9 @@ public class Main_ct_메이즈_러너 {
 		
 		solve();
 		
+		ex++;
+		ey++;
+		
 		System.out.println(totalDistance);
 		System.out.println(ex+" "+ey);
 	}
@@ -84,7 +87,7 @@ public class Main_ct_메이즈_러너 {
 			// 모든 참가자들 회전 및 출구 회전
 			rotate_participants_and_exit();
 			
-			System.out.println("***** : "+ex+", "+ey+", "+totalDistance);
+//			System.out.println("***** : "+ex+", "+ey+", "+totalDistance);
 		}
 	}
 	
@@ -107,7 +110,8 @@ public class Main_ct_메이즈_러너 {
 		// 출구도 회전
 		if(sx <= ex && ex < sx+squareSize && sy<= ey && ey < sy+squareSize) {
 			int ox = ex-sx;
-			int oy = ex-sy;
+			// ***** 이 부분을 int oy = ex-sy;라고 해서....디버깅 지옥에 빠졌음... *****
+			int oy = ey-sy; 
 			
 			int rx = oy;
 			int ry = squareSize - ox - 1;
