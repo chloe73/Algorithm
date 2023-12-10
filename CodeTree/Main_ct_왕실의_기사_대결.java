@@ -94,29 +94,59 @@ public class Main_ct_왕실의_기사_대결 {
 		// 하지만 만약 기사가 이동하려는 방향의 끝에 벽이 있다면 모든 기사는 이동할 수 없게 됩니다.
 		
 		Knight temp = kList.get(idx);
-		int r = temp.r;
-		int c = temp.c;
-		int h = temp.h;
-		int w = temp.w;
 		
 		if(d==0) {
 			// up
+			Queue<Integer> q = new LinkedList<>();
+			// 위쪽으로 이동하는 것이 범위 밖으로 벗어나는 것은 아닌지 확인
+			if(!is_valid(temp.r-1, temp.c)) return;
+			
+			// 해당 기사의 맨 첫번째 행부터 확인
+			boolean isWall = false;
+			for(int c=temp.c;c<temp.c+temp.w;c++) {
+				if(board[temp.r-1][c] == 2) {
+					isWall = true;
+					break;
+				}
+				// 해당 칸에 다른 기사가 위치해 있다면
+				if(kBoard[temp.r-1][c] > 0) {
+					if(!q.contains(kBoard[temp.r-1][c])) {
+						q.add(kBoard[temp.r-1][c]);
+					}
+				}
+			}
+			
+			if(isWall) return;
+			
+			// 벽이 없는 상황에서 다른 기사들이 밀려나는 경우
+			if(!q.isEmpty()) {
+				
+			}
+			// 벽이 없고 밀려날 기사도 없는 경우 해당 기사만 한칸 이동하면 됨.
+			for(int i=temp.r;i<temp.r+temp.h;i++) {
+				for(int j=0;j<temp.c+temp.w;j++) {
+					kBoard[i-1][j] = kBoard[i][j];
+				}
+			}
 		}
 		else if(d==1) {
 			// right
+			boolean isWall = false;
+			Queue<Integer> q = new LinkedList<>();
+			
 			
 		}
 		else if(d==2) {
 			// down
 			// 현재 기사의 영역에서 맨 밑 행부터 탐색 시작
 			boolean isWall = false;
-			int x = r+h-1;
+			int x = temp.r+temp.h-1;
 			Queue<Integer> q = new LinkedList<>();
 			
 			// 범위 밖으로 벗어나는 경우
 			if(x>=L) return;
 			
-			for(int y=c;y<c+w;y++) {
+			for(int y=temp.c;y<temp.c+temp.w;y++) {
 				if(board[x+1][y] == 2) {
 					isWall = true;
 					break;
@@ -137,6 +167,15 @@ public class Main_ct_왕실의_기사_대결 {
 				for(int i=0;i<size;i++) {
 					int knightIdx = q.poll();
 					
+					// 해당 기사들이 밀려날 수 있는지 확인
+					
+				}
+			}
+			
+			// 벽이 없고 밀려날 기사도 없는 경우 해당 기사만 한칸 이동하면 됨.
+			for(int i=x;i>=temp.r;i--) {
+				for(int j=temp.c;j<temp.c+temp.w;j++) {
+					kBoard[i+1][j] = kBoard[i][j];
 				}
 			}
 			
@@ -145,6 +184,11 @@ public class Main_ct_왕실의_기사_대결 {
 			// left
 			
 		}
+	}
+	
+	private static boolean is_valid(int r, int c) {
+		if(r<0 || c<0 || r>=L || c>=L) return false;
+		return true;
 	}
 
 }
