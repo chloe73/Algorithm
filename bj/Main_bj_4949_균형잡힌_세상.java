@@ -65,7 +65,6 @@ public class Main_bj_4949_균형잡힌_세상 {
 			}
 		}
 		
-		
 		if(!stack.empty()) return "no";
 		
 		if(flag) {
