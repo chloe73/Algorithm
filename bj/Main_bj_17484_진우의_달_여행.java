@@ -3,7 +3,6 @@ package algo.bj;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main_bj_17484_진우의_달_여행 {
@@ -43,7 +42,7 @@ public class Main_bj_17484_진우의_달_여행 {
 		for(int i=0;i<M;i++) {
 			visited = new int[N];
 			visited[0] = i;
-			dfs(0,i,-1);
+			dfs(1,i,-1);
 		}
 		
 		System.out.println(result);
@@ -51,7 +50,7 @@ public class Main_bj_17484_진우의_달_여행 {
 
 	private static void dfs(int x, int y, int d) {
 		
-		if(x == N-1) {
+		if(x == N) {
 			int sum = board[0][visited[0]];
 			for(int i=1;i<N;i++) {
 				sum += board[i][visited[i]];
