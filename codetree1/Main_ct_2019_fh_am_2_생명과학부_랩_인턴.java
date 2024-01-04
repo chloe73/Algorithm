@@ -114,6 +114,7 @@ public class Main_ct_2019_fh_am_2_생명과학부_랩_인턴 {
 			
 			// 이동 전 board에서 현재 곰팡이 위치 지우기
 			board[temp.x][temp.y].poll();
+			// board[temp.x][temp.y].clear(); ->> 이렇게 하니 틀렸었음.
 			
 //			int nx = temp.x;
 //			int ny = temp.y;
