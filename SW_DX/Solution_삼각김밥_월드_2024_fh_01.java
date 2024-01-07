@@ -107,6 +107,7 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 		}
 		
 		if(!up && !down) {
+			// 시작점과 도착점이 같은 행에 있는 경우 두 좌표의 열 차이가 result이다.
 			int bigger = Math.max(sy, ey);
 			int smaller = Math.min(sy, ey);
 			
@@ -137,6 +138,14 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 		}
 		
 		if(up) {
+			// 아래로 이동해야 하는 경우
+			// 같은 열에 있는 경우 최소거리는 두 좌표의 행 차이가 result이다.
+			if(sy == ey) {
+				result = ex-sx;
+				return;
+			}
+			
+			
 			
 			//(  | A의 Level - B의 Level | ) 
 			// + ( | A의 dist - B의 dist | ) 
@@ -180,21 +189,21 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 			// + ( | A의 dist - B의 dist | ) 
 			// - 0.5 ( | A의 Level - B의 Level | )
 
-			float startMid = (1+sx) / 2;
-			if(sx % 2 == 0) startMid += 0.5;
-			float endMid = (1+ex) / 2;
-			if(ex % 2 == 0) endMid += 0.5;
-			
-			float a = ex - sx; //(  | A의 Level - B의 Level | ) 
-			// + ( | A의 dist - B의 dist | )  => Math.abs(b-c)
-			float b = Math.abs(startMid-sy);
-			float c = Math.abs(endMid-ey);
-			// - 0.5 ( | A의 Level - B의 Level | )
-			float d = (float) ((float) (ex-sx)*0.5);
-			
-			float num = a + b+c-d;
-			
-			System.out.println(num);
+//			float startMid = (1+sx) / 2;
+//			if(sx % 2 == 0) startMid += 0.5;
+//			float endMid = (1+ex) / 2;
+//			if(ex % 2 == 0) endMid += 0.5;
+//			
+//			float a = ex - sx; //(  | A의 Level - B의 Level | ) 
+//			// + ( | A의 dist - B의 dist | )  => Math.abs(b-c)
+//			float b = Math.abs(startMid-sy);
+//			float c = Math.abs(endMid-ey);
+//			// - 0.5 ( | A의 Level - B의 Level | )
+//			float d = (float) ((float) (ex-sx)*0.5);
+//			
+//			float num = a + b+c-d;
+//			
+//			System.out.println(num);
 			
 //			while(!q.isEmpty()) {
 //				int[] temp = q.poll();
