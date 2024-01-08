@@ -84,7 +84,7 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 		}
 		else bfs(board);
 		
-		print(board);
+//		print(board);
 	}
 	
 	private static void bfs(int[][] board) {
@@ -112,40 +112,30 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 			int smaller = Math.min(sy, ey);
 			
 			result = bigger - smaller;
-			
-//			while(!q.isEmpty()) {
-//				int[] temp = q.poll();
-//				int x = temp[0];
-//				int y = temp[1];
-//				int dist = temp[2];
-//				
-//				if(x == ex && y == ey) {
-//					result = Math.min(result, dist);
-//				}
-//				
-//				for(int d=0;d<6;d++) {
-//					int nx = x + dx[d];
-//					int ny = y + dy[d];
-//					
-//					if(!is_valid(nx, ny) || visited[nx][ny]) continue;
-//					
-//					if(board[nx][ny] != 0) {
-//						visited[nx][ny] = true;
-//						q.add(new int[] {nx,ny,dist+1});					
-//					}
-//				}
-//			}
+			return;
 		}
 		
 		if(up) {
 			// 아래로 이동해야 하는 경우
-			// 같은 열에 있는 경우 최소거리는 두 좌표의 행 차이가 result이다.
-			if(sy == ey) {
-				result = ex-sx;
+			
+			if(ey > sy) {
+				result = Math.abs(ey-sy)+Math.abs(ex-sx);
 				return;
 			}
 			
+			// 같은 열에 있는 경우 최소거리는 두 좌표의 행 차이가 result이다.
+			if(sy == ey) {
+				result = sx-ex;
+				return;
+			}
 			
+			int rowDiff = Math.abs(ex - sx);
+			int colDiff = Math.abs(sy - ey);
+			if(sy > ey && rowDiff >= colDiff) {
+				// 시작점이 도착점보다 왼쪽에 있는 경우
+				result = rowDiff;
+				return;
+			}
 			
 			//(  | A의 Level - B의 Level | ) 
 			// + ( | A의 dist - B의 dist | ) 
@@ -185,6 +175,29 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 		}
 		
 		if(down) {
+			
+			if(ey < sy) {
+				// 도착점이 시작점보다 왼쪽에 있는 경우
+				// 두 좌표의 거리 계산만 해준 것이 최소거리이다.
+				result = Math.abs(ex-sx)+Math.abs(ey-sy);
+				return;
+			}
+			
+			if(sy == ey) {
+				// 시작점과 도착점이 같은 열에 있는 경우
+				result = ex - sx;
+				return;
+			}
+
+			int rowDiff = Math.abs(ex - sx);
+			int colDiff = Math.abs(sy - ey);
+			if(ey > sy && rowDiff >= colDiff) {
+				// 시작점이 도착점보다 오른쪽에 있는 경우
+				result = rowDiff;
+				return;
+				
+			}
+			
 			//(  | A의 Level - B의 Level | ) 
 			// + ( | A의 dist - B의 dist | ) 
 			// - 0.5 ( | A의 Level - B의 Level | )
@@ -205,28 +218,28 @@ public class Solution_삼각김밥_월드_2024_fh_01 {
 //			
 //			System.out.println(num);
 			
-//			while(!q.isEmpty()) {
-//				int[] temp = q.poll();
-//				int x = temp[0];
-//				int y = temp[1];
-//				int dist = temp[2];
-//				
-//				if(x == ex && y == ey) {
-//					result = Math.min(result, dist);
-//				}
-//				
-//				for(int d=0;d<4;d++) {
-//					int nx = x + down_dx[d];
-//					int ny = y + down_dy[d];
-//					
-//					if(!is_valid(nx, ny) || visited[nx][ny]) continue;
-//					
-//					if(board[nx][ny] != 0) {
-//						visited[nx][ny] = true;
-//						q.add(new int[] {nx,ny,dist+1});					
-//					}
-//				}
-//			}
+			while(!q.isEmpty()) {
+				int[] temp = q.poll();
+				int x = temp[0];
+				int y = temp[1];
+				int dist = temp[2];
+				
+				if(x == ex && y == ey) {
+					result = Math.min(result, dist);
+				}
+				
+				for(int d=0;d<4;d++) {
+					int nx = x + down_dx[d];
+					int ny = y + down_dy[d];
+					
+					if(!is_valid(nx, ny) || visited[nx][ny]) continue;
+					
+					if(board[nx][ny] != 0) {
+						visited[nx][ny] = true;
+						q.add(new int[] {nx,ny,dist+1});					
+					}
+				}
+			}
 		}
 	}
 
