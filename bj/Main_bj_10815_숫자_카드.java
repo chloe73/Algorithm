@@ -41,15 +41,15 @@ public class Main_bj_10815_숫자_카드 {
 		int left = 0;
 		int right = N-1;
 		
-		while(left < right) {
+		while(left <= right) {
 			int mid = (left+right) / 2;
 			
 			if(arr[mid] == num) return 1;
 			
-			else if(num > arr[mid]) {
+			if(num > arr[mid]) {
 				left = mid+1;
 			}
-			else if(num < arr[mid]) {
+			if(num < arr[mid]) {
 				right = mid -1;;
 			}
 		}
