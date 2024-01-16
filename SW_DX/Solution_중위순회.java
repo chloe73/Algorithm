@@ -15,8 +15,6 @@ public class Solution_중위순회 {
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		int T = 10;
 		
 		for(int tc=1;tc<=10;tc++) {
 			bw.append("#"+tc+" ");
@@ -44,8 +42,12 @@ public class Solution_중위순회 {
 		
 		if(i > N) return;
 		
+		// left node 순회
 		inorder(2*i);
+		
 		bw.append(tree[i]+"");
+		
+		// right node 순회
 		inorder(2*i+1);
 	}
 
