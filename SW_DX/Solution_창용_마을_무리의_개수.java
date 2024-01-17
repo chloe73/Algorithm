@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 public class Solution_창용_마을_무리의_개수 {
 	
 	static int N,M,result;
-	static int[] parent;
+	static int[] parent, rank;
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -23,6 +23,7 @@ public class Solution_창용_마을_무리의_개수 {
 			N = Integer.parseInt(st.nextToken());
 			M = Integer.parseInt(st.nextToken());
 			parent = new int[N+1];
+			rank = new int[N+1];
 			// parent init
 			for(int i=1;i<=N;i++) {
 				parent[i] = i;
@@ -52,6 +53,8 @@ public class Solution_창용_마을_무리의_개수 {
 	private static void union(int a, int b) {
 		int A = find(a);
 		int B = find(b);
+		
+		if(A == B) return;
 		
 		if(A > B) 
 			parent[A] = B;
