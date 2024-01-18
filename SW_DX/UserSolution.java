@@ -29,7 +29,7 @@ public class UserSolution {
 			
 			while(now > 1) {
 				int parent = getPaprent(now);
-				if(arr[now].income > arr[parent].income) {
+				if(compare(arr[parent] , arr[now]) > 0) {
 					User temp = arr[parent];
 					arr[parent] = arr[now];
 					arr[now] = temp;
@@ -58,11 +58,11 @@ public class UserSolution {
 				int left = getLeft(now);
 				int right = getRight(now);
 				
-				if(arr[left].income > arr[larger].income) {
+				if(compare(arr[larger], arr[left]) > 0) {
 					larger = left;
 				}
 				
-				if(arr[right].income > arr[larger].income) {
+				if(compare(arr[larger], arr[right]) > 0) {
 					larger = right;
 				}
 				
@@ -87,6 +87,12 @@ public class UserSolution {
 		int getPaprent(int child) {
 			return child / 2;
 		}
+		
+		// income: user의 수입, 클수록 우선순위가 높다. 만약 수입이 동일한 경우 uID가 작은 user의 우선순위가 높다.
+		int compare(User u1, User u2) {
+			if(u1.income == u2.income) return Integer.compare(u1.uId, u2.uId);
+			return Integer.compare(u2.income, u1.income);
+		}
 	}
 
 	
@@ -100,7 +106,7 @@ public class UserSolution {
 		heap.add(uID, income);
 	}
 	
-	int getTop10(int[] result) {
+	public int getTop10(int[] result) {
 		int cnt = 0;
 		// 수입이 가장 큰 user 10명의 uID를 수입에 대해 내림차순으로 구하는 함수이다.
 		if(heap.size >= 10) {
