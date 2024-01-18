@@ -29,7 +29,7 @@ public class UserSolution {
 			
 			while(now > 1) {
 				int parent = getPaprent(now);
-				if(compare(arr[parent] , arr[now]) > 0) {
+				if(compare(arr[now] , arr[parent]) > 0) {
 					User temp = arr[parent];
 					arr[parent] = arr[now];
 					arr[now] = temp;
@@ -58,11 +58,11 @@ public class UserSolution {
 				int left = getLeft(now);
 				int right = getRight(now);
 				
-				if(compare(arr[larger], arr[left]) > 0) {
+				if(compare(arr[left], arr[larger]) > 0) {
 					larger = left;
 				}
 				
-				if(compare(arr[larger], arr[right]) > 0) {
+				if(compare(arr[right], arr[larger]) > 0) {
 					larger = right;
 				}
 				
@@ -90,9 +90,19 @@ public class UserSolution {
 		
 		// income: user의 수입, 클수록 우선순위가 높다. 만약 수입이 동일한 경우 uID가 작은 user의 우선순위가 높다.
 		int compare(User u1, User u2) {
-			if(u1.income == u2.income) return Integer.compare(u1.uId, u2.uId);
-			return Integer.compare(u2.income, u1.income);
-		}
+            if (u1.income > u2.income) {
+                return 1;
+            } else if (u1.income < u2.income) {
+                return -1;
+            } else {
+                // 수입이 같을 경우에는 uId를 비교
+                if (u1.uId < u2.uId) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        }
 	}
 
 	
@@ -103,24 +113,45 @@ public class UserSolution {
 	
 	public void addUser(int uID, int income) {
 		// user을 추가하는 함수이다.
+//		System.out.println("add :"+uID+", "+income);
 		heap.add(uID, income);
 	}
 	
 	public int getTop10(int[] result) {
 		int cnt = 0;
+		
 		// 수입이 가장 큰 user 10명의 uID를 수입에 대해 내림차순으로 구하는 함수이다.
 		if(heap.size >= 10) {
+			User[] outputArr = new User[10];
+			
 			for(int i=0;i<10;i++) {
-				result[i] = heap.poll().uId;
+				User output = heap.poll();
+				result[i] = output.uId;
 				cnt++;
+				outputArr[i] = output;
+			}
+			
+			for(int i=0;i<10;i++) {
+				User temp = outputArr[i];
+				heap.add(temp.uId, temp.income);
 			}
 		}
 		// 총 user의 수가 10명이 되지 않으면 존재하는 user의 uID를 수입에 대해 내림차순으로 구한다.
 		else {
 			int heapSize = heap.size;
+			User[] outputArr = new User[heapSize];
+			
 			for(int i=0;i<heapSize;i++) {
-				result[i] = heap.poll().uId;
+				User output = heap.poll();
+//				System.out.println("Max heap : "+output.income+", uId : "+output.uId);
+				result[i] = output.uId;
 				cnt++;
+				outputArr[i] = output;
+			}
+			
+			for(int i=0;i<heapSize;i++) {
+				User temp = outputArr[i];
+				heap.add(temp.uId, temp.income);
 			}
 		}
 		

@@ -41,6 +41,7 @@ public class Solution_기초_Partial_Sort_연습 {
 			makeInput(userNum);
 			
 			for(int j = 0; j < userNum; j++) {
+//				System.out.println("uId : "+uID+1+", input :"+input[j]);
 				usersolution.addUser(uID++, input[j]);
 			}
 			ret = usersolution.getTop10(result);
