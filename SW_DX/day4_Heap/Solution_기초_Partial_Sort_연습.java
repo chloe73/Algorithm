@@ -1,7 +1,9 @@
-package algo.SW_DX;
+package algo.SW_DX.day4_Heap;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
+import algo.SW_DX.UserSolution;
 
 public class Solution_기초_Partial_Sort_연습 {
 	

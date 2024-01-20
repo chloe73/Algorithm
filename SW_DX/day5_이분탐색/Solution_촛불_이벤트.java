@@ -1,4 +1,4 @@
-package algo.SW_DX.day5;
+package algo.SW_DX.day5_이분탐색;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

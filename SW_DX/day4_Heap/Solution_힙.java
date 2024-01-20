@@ -1,4 +1,4 @@
-package algo.SW_DX;
+package algo.SW_DX.day4_Heap;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
