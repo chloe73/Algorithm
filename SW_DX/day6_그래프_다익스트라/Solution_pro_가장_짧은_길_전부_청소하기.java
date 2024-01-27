@@ -12,7 +12,8 @@ import java.util.StringTokenizer;
 
 public class Solution_pro_가장_짧은_길_전부_청소하기 {
 	
-	static int N,M,result;
+	static int N,M;
+	static long result;
 	static ArrayList<Node>[] graph;
 	static long[] sumDist;
 	static int[] dist;
@@ -90,7 +91,7 @@ public class Solution_pro_가장_짧은_길_전부_청소하기 {
 					pq.add(new Node(next.to, sumDist[next.to]));
 				}
 				else if(sumDist[next.to] == temp.cost + next.cost) {
-					dist[next.to] = (int) Math.min(dist[next.to], next.cost);
+					dist[next.to] = Math.min(dist[next.to], (int)next.cost);
 				}
 			}
 		}
