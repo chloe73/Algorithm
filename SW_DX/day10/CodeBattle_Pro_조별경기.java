@@ -80,56 +80,25 @@ public class CodeBattle_Pro_조별경기 {
 
 class UserSolution {
 	
-	static ArrayList<Integer> aList, bList;
-	static int[] players;
-	static HashMap<Integer, Player> playerMap;
-	static class Player {
-		int teamIdx;
-		int num, score;
-		
-		Player(int num, int teamIdx, int score){
-			this.num = num;
-			this.teamIdx = teamIdx;
-			this.score = score;
-		}
-	}
+	static int[] players; // 각 선수들의 부모 정보
+	static int[] groupScore; // 각 조별 점수 정보
 	
     public void init(int N) {
-    	playerMap = new HashMap<>();
     	players = new int[N+1];
+    	groupScore = new int[N+1];
+    	
     	for(int i=1;i<=N;i++) {
-    		playerMap.put(i, new Player(i, 0, 0));
     		players[i] = i;
     	}
     }
 
     public void updateScore(int mWinnerID, int mLoserID, int mScore) {
-    	aList = new ArrayList<>();
-    	bList = new ArrayList<>();
-    	
+
     	int A = find(mWinnerID);
     	int B = find(mLoserID);
     	
-    	traverse(A, aList);
-    	traverse(B, bList);
-    	
-    	for(int i : aList) {
-    		playerMap.get(i).score += mScore;
-    	}
-    	
-    	for(int i : bList) {
-    		playerMap.get(i).score -= mScore;
-    	}
-    }
-    
-    public void traverse(int idx, ArrayList<Integer> list) {
-    	int parent = players[idx];
-    	
-    	if(parent != idx) {
-    		traverse(parent, list);
-    	}
-    	
-    	list.add(idx);
+    	groupScore[A] += mScore;
+    	groupScore[B] -= mScore;
     }
 
     public void unionTeam(int mPlayerA, int mPlayerB) {
@@ -142,17 +111,37 @@ class UserSolution {
     	int A = find(mPlayerA);
     	int B = find(mPlayerB);
     	
-    	if(A != B) players[B] = A;
+    	players[B] = A;
+    	
+    	// 합칠 때, A조가 받을 점수를 B점수에서 빼주자.
+    	// 왜냐하면, A조가 지금까지 획득한 점수는 B가 받은 것이 아니니까!
+    	groupScore[B] -= groupScore[A];
     }
     
     public int getScore(int mID) {
-        return playerMap.get(mID).score;
+    	
+    	int A = find(mID);
+    	int B = mID;
+    	
+    	if(A != B) {
+    		return groupScore[A] + groupScore[B];
+    	}
+    	
+        return groupScore[A];
     }
     
     public int find(int a) {
     	if(players[a] == a) return a;
     	
-    	return players[a] = find(players[a]);
+    	int p = find(players[a]);
+    	
+    	// 부모의 부모가 바뀐 경우
+    	if(p != players[a]) {
+    		groupScore[a] += groupScore[players[a]];
+    	}
+    	
+    	players[a] = p;
+    	return players[a];
     }
 }
 
