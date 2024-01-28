@@ -9,11 +9,11 @@ import java.util.StringTokenizer;
 
 public class Solution_은기의_아주_큰_그림 {
 	
-	static long MOD = 1000000007;
-	static int MAX_SIZE = 2000;
+	static final long MOD = 1000000000;
+	static final int MAX_SIZE = 2000;
+	static final int[] dx = {-1,1,0,0};
+	static final int[] dy = {0,0,-1,1};
 	static int H,W,N,M;
-	static int[] dx = {-1,1,0,0};
-	static int[] dy = {0,0,-1,1};
 	static long[][] row_hash = new long[MAX_SIZE][MAX_SIZE]; // 가로줄 해싱
 	static long[][] hash = new long[MAX_SIZE][MAX_SIZE]; // 최종 해싱
 
