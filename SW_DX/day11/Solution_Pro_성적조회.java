@@ -2,10 +2,10 @@ package algo.SW_DX.day11;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 class Solution_Pro_성적조회 {
 	private final static int CMD_INIT = 100;
@@ -102,8 +102,8 @@ class Solution_Pro_성적조회 {
 class UserSolution {
 	
 	static HashMap<Integer, int[]> studentMap;
-	static ArrayList<Student>[][] board;
-	static class Student {
+	static TreeSet<Student>[][] board;
+	static class Student implements Comparable<Student>{
 		int id, grade, gender, score;
 		public Student(int id, int grade, int gender, int score) {
 			this.id = id;
@@ -111,13 +111,17 @@ class UserSolution {
 			this.gender = gender;
 			this.score = score;
 		}
+		public int compareTo(Student o) {
+			if(this.score == o.score) return this.id - o.id;
+			return this.score - o.score;
+		}
 	}
 	
 	public void init() {
-		board = new ArrayList[3][2];
+		board = new TreeSet[3][2];
 		for(int i=0;i<3;i++) {
 			for(int j=0;j<2;j++) {
-				board[i][j] = new ArrayList<>();
+				board[i][j] = new TreeSet<>();
 			}
 		}
 		
@@ -129,21 +133,12 @@ class UserSolution {
 	public int add(int mId, int mGrade, char mGender[], int mScore) {
 		int grade = mGrade-1;
 		int gender = mGender[0] == 'm' ? 0 : 1;
-		studentMap.put(mId, new int[] {grade, gender, board[grade][gender].size()});
+		studentMap.put(mId, new int[] {grade, gender, mScore});
 		board[grade][gender].add(new Student(mId, mGrade, gender, mScore));
 		
 		// mGrade학년 mGender인 학생 중에서 점수가 가장 높은 학생의 ID를 반환한다.
-		PriorityQueue<Student> pq = new PriorityQueue<>((o1,o2) -> {
-			if(o1.score == o2.score)
-				return o2.id - o1.id;
-			return o2.score - o1.score;
-		});
 		
-		for(Student s : board[grade][gender]) {
-			pq.add(s);
-		}
-		
-		return pq.poll().id;
+		return board[grade][gender].last().id;
 	}
 
 	public int remove(int mId) {
@@ -154,55 +149,37 @@ class UserSolution {
 		int[] temp = studentMap.get(mId);
 		int grade = temp[0];
 		int gender = temp[1];
-		int index = temp[2];
+		int score = temp[2];
 		
-		board[grade][gender].remove(index);
+		board[grade][gender].remove(new Student(mId, grade, gender, score));
 		studentMap.remove(mId);
-		
-		// ArrayList size 재조정되므로 hashMap key별 index위치 수정해줘야함.
-		for(int i=0;i<board[grade][gender].size();i++) {
-			studentMap.put(board[grade][gender].get(i).id, new int[] {grade,gender,i});
-		}
-		
+
 		// 삭제 후에, 학년과 성별이 동일한 학생이 없다면, 0을 반환한다.
 		if(board[grade][gender].size() == 0) return 0;
 
 		// 삭제 후에 mId 학생의 학년과 성별이 동일한 학생 중에서 점수가 가장 낮은 학생의 ID를 반환한다.
 		// 점수가 가장 낮은 학생이 여러 명이라면, 그 중에서 ID가 가장 작은 값을 반환한다.
-		PriorityQueue<Student> pq = new PriorityQueue<>((o1,o2) -> {
-			if(o1.score == o2.score) return o1.id - o2.id;
-			return o1.score - o2.score;
-		});
-		
-		for(Student s : board[grade][gender]) {
-			pq.add(s);
-		}
-		
-		return pq.poll().id;
+		return board[grade][gender].first().id;
 	}
 
 	public int query(int mGradeCnt, int mGrade[], int mGenderCnt, char mGender[][], int mScore) {
 		// mGrade 학년 집합과 mGender 성별 집합에 속하면서, 점수가 mScore 이상인 학생 중에서 점수가 가장 낮은 학생의 ID를 반환한다.
 		// 점수가 가장 낮은 학생이 여러 명이라면, 그 중에서 ID가 가장 작은 값을 반환한다.
-		PriorityQueue<Student> pq = new PriorityQueue<>((o1,o2) -> {
-			if(o1.score == o2.score) return o1.id - o2.id;
-			return o1.score - o2.score;
-		});
+		Student ret = new Student(0, 0, 0, Integer.MAX_VALUE);
 		
 		for(int i=0;i<mGradeCnt;i++) {
 			int grade = mGrade[i]-1;
 			for(int j=0;j<mGenderCnt;j++) {
 				int gender = mGender[j][0] == 'm' ? 0 : 1;
-				for(Student s : board[grade][gender]) {
-					if(s.score >= mScore) {
-						pq.add(s);
+				Student s = board[grade][gender].higher(new Student(0, grade, gender, mScore));
+				if(s != null) {
+					if(s.compareTo(ret) < 0) {
+						ret = s;
 					}
 				}
 			}
 		}
 		
-		if(pq.isEmpty()) return 0;
-		
-		return pq.poll().id;
+		return ret.id;
 	}
 }
