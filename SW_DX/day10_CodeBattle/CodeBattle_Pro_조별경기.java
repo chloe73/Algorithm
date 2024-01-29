@@ -1,4 +1,4 @@
-package algo.SW_DX.day10;
+package algo.SW_DX.day10_CodeBattle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
