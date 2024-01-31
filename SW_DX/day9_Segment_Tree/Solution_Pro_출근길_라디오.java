@@ -86,9 +86,28 @@ class Solution_Pro_출근길_라디오 {
 
 class UserSolution {
 	
-	ArrayList<ArrayList<Integer>> node;
+	ArrayList<ArrayList<Integer>> typeNode;
 	int[] seg;
 	int base;
+	
+	private void update_seg(int index, int value) {
+		seg[index+=base] = value;
+		// 상위 노드들 또한 함께 update
+		while((index >>= 1) != 0) {
+			seg[index] = seg[index*2]+seg[index*2+1];
+		}
+	}
+	
+	private int get_sum(int s, int e) {
+		int ret = 0;
+		
+		for(s += base, e+= base; s<=e; s>>=1, e>>=1) {
+			if(s%2 == 1) ret += seg[s++];
+			if(e%2 == 0) ret += seg[e--];
+		}
+		
+		return ret;
+	}
 	
 	void init(int N, int M, int mType[], int mTime[]) {
 		// 각 테스트 케이스의 처음에 호출된다.
@@ -101,20 +120,23 @@ class UserSolution {
 		while(base < N-1) base <<= 1;
 		
 		seg = new int[base * 2];
-		node = new ArrayList<>();
+		typeNode = new ArrayList<>();
 		
 		for(int i=0;i<M;i++) {
-			node.add(new ArrayList<>());
+			typeNode.add(new ArrayList<>());
 		}
 		
 		// 각 구간의 도로의 종류는 도로의 시작 지점에 가까운 순서대로 mType[] 으로 N-1개가 주어지며 0 ~ M – 1 의 값을 갖는다.
 		// 각 구간의 현재 통과 예상 시간은 도로의 시작 지점에 가까운 순서대로 mTime[] 으로 주어진다.
 		// 각 구간 별 소요시간 저장
+		// 말단 노드 데이터 저장
 		for(int i=0;i<N-1;i++) {
 			seg[base+i] = mTime[i];
+			typeNode.get(mType[i]).add(i);
 		}
 		
 		// segment Tree 세팅 (bottom-up 방식)
+		// 중간 노드 값 세팅
 		for(int i=base-1;i>0;i--) {
 			seg[i] = seg[i*2] + seg[i*2+1];
 		}
@@ -125,16 +147,31 @@ class UserSolution {
 	}
 
 	void update(int mID, int mNewTime) {
-
+		update_seg(mID, mNewTime);
 	}
 
 	int updateByType(int mTypeID, int mRatio256) {
+		// 도로의 종류가 mTypeID 인 구간들의 모든 도로의 통과 시간이 mRatio256 / 256 의 비율로 변경되며, 
+		// 변경 이후 소수점 이하는 버린다. 변경된 모든 구간의 통과 시간의 합을 반환한다.
+		int ret = 0;
 		
-		return -1;
+		for(int node : typeNode.get(mTypeID)) {
+			int original = seg[base+node];
+			int renewal = original * mRatio256 / 256;
+			update_seg(node, renewal);
+			ret += renewal;
+		}
+		
+		return ret;
 	}
 
 	int calculate(int mA, int mB) {
+		if(mA > mB) {
+			int temp = mA;
+			mA = mB;
+			mB = temp;
+		}
 		
-		return -1;
+		return get_sum(mA, mB-1);
 	}
 }
