@@ -2,8 +2,10 @@ package algo.SW_DX.day15;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.TreeMap;
+import java.util.Queue;
 import java.util.Scanner;
 
 class Solution_Pro_신소재_케이블2 {
@@ -82,8 +84,7 @@ class Solution_Pro_신소재_케이블2 {
 }
 
 class UserSolution {
-	
-//	static int MAX_SIZE = 1000000001;
+
 	static class Node implements Comparable<Node> {
 		int to,cost;
 		public Node(int to, int cost) {
@@ -94,11 +95,11 @@ class UserSolution {
 			return o.cost - this.cost; // 최대 비용 return
 		}
 	}
-	static TreeMap<Integer, Integer> map;
+	static HashMap<Integer, Integer> map;
 	static ArrayList<ArrayList<Node>> list;
 	
 	public void init(int mDevice) {
-		map = new TreeMap<>();
+		map = new HashMap<>();
 		list = new ArrayList<ArrayList<Node>>();
 		map.put(mDevice, list.size());
 		ArrayList<Node> li = new ArrayList<>();
@@ -121,6 +122,8 @@ class UserSolution {
 	public int measure(int mDevice1, int mDevice2) {
 		// 장비 mDevice1에서 장비 mDevice2로 신호를 전송했을 때 전송 시간을 반환한다.
 		// mDevice1와 mDevice2는 이미 존재하는 장비 번호이고 서로 다르다.
+		// 두 장비가 직접 연결되어 있지 않더라도 두 장비 사이에 케이블과 다른 장비로 구성된 경로가 존재할 경우 신호 전송이 가능하다.
+
 		PriorityQueue<Node> pq = new PriorityQueue<>();
 		boolean[] visited = new boolean[map.size()];
 		int[] dist = new int[map.size()];
@@ -132,21 +135,20 @@ class UserSolution {
 		while(!pq.isEmpty()) {
 			Node temp = pq.poll();
 			
+			// 이 때, 전송 시간은 경로상에 있는 케이블의 전송 시간의 합이 되고 신호는 이미 지나간 장비를 다시 지나가지 않는다.
 			if(visited[map.get(temp.to)]) continue;
 			
 			visited[map.get(temp.to)] = true;
 			
 			for(Node next : list.get(map.get(temp.to))) {
-				if(next.to == mDevice2) {
-					return temp.cost + next.cost;
-				}
-				if(dist[next.to] >  temp.cost + next.cost) {
-					dist[next.to] = temp.cost + next.cost;
-					pq.add(new Node(next.to, dist[next.to]));
+
+				if(dist[map.get(next.to)] >  temp.cost + next.cost) {
+					dist[map.get(next.to)] = temp.cost + next.cost;
+					pq.add(new Node(next.to, dist[map.get(next.to)]));
 				}
 			}
 		}
-		return -1;
+		return dist[map.get(mDevice2)];
 	}
 	
 	public int test(int mDevice) {
@@ -155,7 +157,41 @@ class UserSolution {
 		// mDevice는 이미 존재하는 장비 번호이다.
 		// 함수 호출 시, 이미 존재하는 장비는 2개 이상 있음을 보장한다.
 		
+		int ret = 0;
+		PriorityQueue<Integer> pq = new PriorityQueue<>((o1,o2)->{
+			return o2-o1;
+		});
+		for(Node next : list.get(map.get(mDevice))) {
+			pq.add(bfs(mDevice,next.to,next.cost));
+		}
+		if(pq.size()>=2)
+			ret = pq.poll()+pq.poll();
+		else if(pq.size() == 1) ret = pq.poll();
+		return ret;
+	}
+	
+	private static int bfs(int parent, int m, int c) {
+		Queue<int[]> q = new LinkedList<>();
+		boolean[] visited = new boolean[map.size()];
+		q.add(new int[] {m,c});
+		visited[map.get(m)] = true;
+		int ret = Integer.MIN_VALUE;
 		
-		return -1;
+		while(!q.isEmpty()) {
+			int[] temp = q.poll();
+			int index = temp[0];
+			int dist = temp[1];
+			
+			ret = Math.max(ret, dist);
+			
+			for(Node next : list.get(map.get(index))) {
+				if(next.to == parent || visited[map.get(next.to)]) continue;
+				
+				visited[map.get(next.to)] = true;
+				q.add(new int[] {next.to, dist+next.cost});
+			}
+		}
+		
+		return ret;
 	}
 }
