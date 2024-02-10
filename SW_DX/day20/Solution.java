@@ -1,11 +1,10 @@
 package algo.SW_DX.day20;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 // 17152. [Pro] 검색엔진2
 public class Solution {
@@ -118,9 +117,10 @@ public class Solution {
 
 class UserSolution {
 	
-	static TreeSet<Word> wordSet; // 정렬된 모든 검색어 집합 데이터
+	static ArrayList<Word> wordSortList; // 정렬된 모든 검색어 집합 데이터
 	static HashMap<String, Word> wordMap; // 모든 검색어 집합 데이터
-	static HashMap<String, HashSet<Word>> relatedWord; // 연관검색어 데이터
+	static ArrayList<HashSet<Word>> relatedWord; // 연관검색어 데이터 집합
+	static HashMap<String, Integer> relatedWordIndexInfo;
 	static class Word implements Comparable<Word>{
 		String w;
 		int cnt;
@@ -139,10 +139,10 @@ class UserSolution {
 	void init() {
 		// 각 테스트 케이스에서 처음 1회 호출된다.
 		// 초기에는 아무 검색 기록도 없다.
-		wordSet = new TreeSet<>();
+		wordSortList = new ArrayList<>();
 		wordMap = new HashMap<>();
-		relatedWord = new HashMap<>();
-		
+		relatedWord = new ArrayList<>();
+		relatedWordIndexInfo = new HashMap<>();
 		return;
 	}
 
@@ -160,14 +160,15 @@ class UserSolution {
 		if(!wordMap.containsKey(input)) {
 			Word word = new Word(input, mCount);
 			wordMap.put(input, word);
-			wordSet.add(word);
+			wordSortList.add(word);
 		}
 		else {
 			wordMap.get(input).cnt+= mCount;
 		}
 		
-		if(relatedWord.containsKey(input)) {
-			for(Word word : relatedWord.get(input)) {
+		if(relatedWordIndexInfo.containsKey(input)) {
+			int index = relatedWordIndexInfo.get(input);
+			for(Word word : relatedWord.get(index)) {
 				word.cnt += mCount;
 			}
 		}
@@ -192,11 +193,13 @@ class UserSolution {
 		int order = 0;
 		int rank = 0;
 		
+		Collections.sort(wordSortList);
+		
 		String keyword = "";
 		outer:for(int i=0;i<=input.length();i++) {
 			order = i;
 			if(i == 0) {
-				for(Word w : wordSet) {
+				for(Word w : wordSortList) {
 					rank++;
 					
 					if(rank > 5) break;
@@ -210,7 +213,7 @@ class UserSolution {
 				keyword += input.charAt(i-1);
 				rank = 0;
 				
-				for(Word w : wordSet) {
+				for(Word w : wordSortList) {
 					if(w.w.startsWith(keyword)) {
 						rank++;
 						if(rank > 5) break;
@@ -229,6 +232,15 @@ class UserSolution {
 		
 		// 이 함수로 검색한 후 해당 검색어의 조회수가 ‘1’ 증가한다.
 		wordMap.get(input).cnt++;
+		
+		if(relatedWordIndexInfo.containsKey(input)) {
+			int index = relatedWordIndexInfo.get(input);
+			for(Word w : relatedWord.get(index)) {
+				if(w.w.equals(input)) continue;
+				w.cnt += 1;
+			}
+		}
+		
 		return res;
 	}
 
@@ -255,29 +267,47 @@ class UserSolution {
 		// 검색어 A와 검색어 B를 연관 검색어로 설정할 경우 
 		// 검색어 A의 조회수와 검색어 B의 조회수가 서로 합해진다.
 		
-		if(!relatedWord.containsKey(input1)) {
-			relatedWord.put(input1, new HashSet<>());
+		// 둘다 연관검색어가 없는 경우 새로 만들어주면 됨.
+		if(!relatedWordIndexInfo.containsKey(input1) && !relatedWordIndexInfo.containsKey(input2)) {
+			relatedWordIndexInfo.put(input1, relatedWord.size());
+			relatedWordIndexInfo.put(input2, relatedWord.size());
+			relatedWord.add(new HashSet<>());
+			
+			int index1 = relatedWordIndexInfo.get(input1);
+			relatedWord.get(index1).add(wordMap.get(input1));
+			relatedWord.get(index1).add(wordMap.get(input2));
 		}
-		relatedWord.get(input1).add(wordMap.get(input2));
 		
-		if(!relatedWord.containsKey(input2)) {
-			relatedWord.put(input2, new HashSet<>());
+		// input1만 연관검색어가 있는 경우
+		if(relatedWordIndexInfo.containsKey(input1) && !relatedWordIndexInfo.containsKey(input2)) {
+			int index1 = relatedWordIndexInfo.get(input1);
+			relatedWordIndexInfo.put(input2, index1);
+			relatedWord.get(index1).add(wordMap.get(input2));
 		}
-		relatedWord.get(input2).add(wordMap.get(input1));
+
+		// input2만 연관검색어가 있는 경우
+		if(!relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
+			int index2 = relatedWordIndexInfo.get(input2);
+			relatedWordIndexInfo.put(input1, index2);
+			relatedWord.get(index2).add(wordMap.get(input1));
+		}
 		
-		relatedWord.get(input1).addAll(relatedWord.get(input2));
-		relatedWord.get(input2).addAll(relatedWord.get(input1));
-		
+		// 둘다 연관검색어를 가지고 있는 경우 두개를 합쳐야 함.
+		if(relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
+			int index1 = relatedWordIndexInfo.get(input1);
+			int index2 = relatedWordIndexInfo.get(input2);
+			relatedWord.get(index1).addAll(relatedWord.get(index2));
+			relatedWord.get(index2).addAll(relatedWord.get(index1));
+		}
+	
 		int count = wordMap.get(input1).cnt + wordMap.get(input2).cnt;
-		int ret = 0;
-		
-		for(Word w : relatedWord.get(input1)) {
-			ret += w.cnt;
+		int index1 = relatedWordIndexInfo.get(input1);
+		for(Word w : relatedWord.get(index1)) {
 			w.cnt = count;
 		}
 		
 		// 연관 검색어 관계로 묶인 모든 검색어들의 조회수의 합을 반환한다.
-		return ret;
+		return count;
 	}
 
 	void rank(char mPrefix[], int mRank, char mReturnStr[]) {
@@ -294,7 +324,24 @@ class UserSolution {
 			input += c+"";
 		}
 		
+		Collections.sort(wordSortList);
 		
+		int rank = 0;
+		for(Word w : wordSortList) {
+			if(w.w.startsWith(input)) {
+				rank++;
+				
+				if(rank == mRank) {
+					char[] result = w.w.toCharArray();
+					for(int i=0;i<result.length;i++) {
+						mReturnStr[i] = result[i];
+						if(i == result.length-1)
+							mReturnStr[i+1] = '\0';
+					}
+					break;
+				}
+			}
+		}
 		
 		return;
 	}
