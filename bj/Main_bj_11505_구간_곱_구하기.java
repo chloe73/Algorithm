@@ -47,7 +47,7 @@ public class Main_bj_11505_구간_곱_구하기 {
 				// a가 2인 경우에는 b부터 c까지의 곱을 구하여 출력하면 된다.
 				// 구간의 곱을 1,000,000,007로 나눈 나머지를 출력한다.
 				 long result = query(1, 0, N-1, b-1, c-1);
-				 result = result % 1000000007;
+				 // result = result % 1000000007;
 				 bw.write(result+"\n");
 			}
 		} // input end
