@@ -2,6 +2,10 @@ package algo.SW_DX.day4_Heap;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution_Pro_Social_Media {
@@ -149,8 +153,7 @@ public class Solution_Pro_Social_Media {
 		tc = Integer.parseInt(stdin.nextToken());
 		answer_score = Integer.parseInt(stdin.nextToken());
 
-		for (int t = 1; t <= tc; t++)
-		{
+		for (int t = 1; t <= tc; t++) {
 			int score;
 			for (int i = 0; i < 1005; i++)
 				for (int j = 0; j < 1005; j++)
@@ -166,24 +169,159 @@ public class Solution_Pro_Social_Media {
 	}
 }
 
+// 10개 테스트케이스를 합쳐서 C++의 경우 1초 / Java의 경우 2초
 class UserSolution {
-	public void init(int N) {
+	
+	static HashMap<Integer, User> userMap; // key : uID
+	static HashMap<Integer, Integer> postUserMap; // key : pID, value : uID
+	static HashMap<Integer, Post> postMap; // total post data // key : pID
+	static class User {
+		int id;
+		ArrayList<Post> postList;
+		HashSet<Integer> followSet;
 		
+		public User(int id) {
+			this.id = id;
+			followSet = new HashSet<>();
+			postList = new ArrayList<>();
+		}
+	}
+	static class Post implements Comparable<Post>{
+		int uid,pid,like,timestamp;
+		
+		public Post(int uid, int pid, int like, int timestamp) {
+			this.uid = uid;
+			this.pid = pid;
+			this.like = like;
+			this.timestamp = timestamp;
+		}
+		
+		public int compareTo(Post o) {
+			if(this.like == o.like) return o.timestamp - this.timestamp;
+			return o.like - this.like;
+		}
+	}
+	static class Post2 implements Comparable<Post2>{
+		int uid,pid,like,timestamp;
+		
+		public Post2(int uid, int pid, int like, int timestamp) {
+			this.uid = uid;
+			this.pid = pid;
+			this.like = like;
+			this.timestamp = timestamp;
+		}
+		public int compareTo(Post2 o) {
+			return o.timestamp - this.timestamp;
+		}
+	}
+	
+	public void init(int N) {
+		// 각 testcase 시작 시 초기화를 위해 1번 호출된다.
+
+		userMap = new HashMap<>();
+		postUserMap = new HashMap<>();
+		postMap = new HashMap<>();
+		
+		// Parameters
+		// N: 사용자 수 (2 ≤ N ≤ 1,000)
 	}
 
 	public void follow(int uID1, int uID2, int timestamp) {
+		// “uID1” 사용자가 “uID2” 사용자를 “follow” 한다.
+		// “uID1” 사용자는 “uID2” 사용자의 모든 게시글을 볼 수 있다.
 		
+		if(!userMap.containsKey(uID1)) {
+			userMap.put(uID1, new User(uID1));
+		}
+		userMap.get(uID1).followSet.add(uID2);
+		
+		if(!userMap.containsKey(uID2)) {
+			userMap.put(uID2, new User(uID2));
+		}
+		
+		// Parameters
+		// uID1, uID2 : 사용자의 id (1 ≤ uID1, uID2 ≤ N)
+		// timestamp : 현재 시점의 “timestamp” (1 ≤ timestamp ≤ 100,000)
 	}
 
 	public void makePost(int uID, int pID, int timestamp) {
+		// “uID” 사용자가 “pID” 게시글을 게시한다.
+
+		if(!userMap.containsKey(uID)) {
+			userMap.put(uID, new User(uID));
+		}
 		
+		postUserMap.put(pID, uID);
+		Post post = new Post(uID, pID, 0, timestamp);
+		postMap.put(pID, post);
+		userMap.get(uID).postList.add(post);
+		
+		// Parameters
+		// uID : 사용자의 ID (1 ≤ uID ≤ N)
+		// pID : 게시글의 ID ( 1 부터 오름차순으로 주어진다. )
+		// timestamp : 현재 시점의 “timestamp” (1 ≤ timestamp ≤ 100,000)
 	}
 
 	public void like(int pID, int timestamp) {
+		// “pID” 게시글에 “like” 를 1 번 추가 한다.
+		// “pID” 는 makePost() 에서 전달되었던 값으로만 주어 진다.
 		
+		postMap.get(pID).like++;
+		
+		// Parameters
+		// pID : “like” 를 추가할 게시글의 pID
+		// timestamp : 현재 시점의 “timestamp” (1 ≤ timestamp ≤ 100,000)
 	}
 
 	public void getFeed(int uID, int timestamp, int pIDList[]) {
+		// 현재 “timestamp” 를 기준으로 “uID” 사용자에게 보여지는 최대 10 개의 게시글의 “pID” 들을 찾아 우선순위의 내림차순으로 “pIDList[]” 배열에 저장하여 반환 한다.
+
+		PriorityQueue<Post> pq = new PriorityQueue<>(); // 1000초 이내인 것들
+		PriorityQueue<Post2> pq2 = new PriorityQueue<>(); // 1000초 지난 것들
 		
+		// 본인 게시물 포함
+		for(int i=userMap.get(uID).postList.size()-1;i>=0;i--) {
+			Post p = userMap.get(uID).postList.get(i);
+			
+			if(timestamp - p.timestamp <= 1000) {
+				pq.add(p);
+			}
+			else {
+				pq2.add(new Post2(p.uid, p.pid, p.like, p.timestamp));
+			}
+		}
+		
+		// uID가 follow한 user 정보
+		for(int follow : userMap.get(uID).followSet) {
+			
+			for(int i=userMap.get(follow).postList.size()-1;i>=0;i--) {
+				Post p = userMap.get(follow).postList.get(i);
+				
+				if(timestamp - p.timestamp <= 1000) {
+					pq.add(p);
+				}
+				else {
+					pq2.add(new Post2(p.uid, p.pid, p.like, p.timestamp));
+				}
+			}
+		}
+		
+		int cnt = 0;
+		
+		while(!pq.isEmpty()) {
+			pIDList[cnt++] = pq.poll().pid;
+			if(cnt == 10) break;
+		}
+		
+		if(cnt < 10 && pq2.size() > 0) {
+			while(!pq2.isEmpty()) {
+				pIDList[cnt++] = pq2.poll().pid;
+				if(cnt == 10) break;
+			}
+		}
+		// Parameters
+		// uID : 사용자의 id (1 ≤ uID ≤ N)
+		// timestamp : 현재 시점의 timestamp (1 ≤ timestamp ≤ 100,000)
+		// pIDList[] : 보여지는 게시글의 pID 들을 저장하는 배열
 	}
 }
