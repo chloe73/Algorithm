@@ -120,7 +120,7 @@ class UserSolution {
 	static ArrayList<Word> wordSortList; // 정렬된 모든 검색어 집합 데이터
 	static HashMap<String, Word> wordMap; // 모든 검색어 집합 데이터
 	static ArrayList<HashSet<Word>> relatedWord; // 연관검색어 데이터 집합
-	static HashMap<String, Integer> relatedWordIndexInfo;
+	static HashMap<String, Integer> relatedWordIndexInfo; // 연관검색어 집합 인덱스 번호 저장
 	static class Word implements Comparable<Word>{
 		String w;
 		int cnt;
@@ -169,6 +169,9 @@ class UserSolution {
 		if(relatedWordIndexInfo.containsKey(input)) {
 			int index = relatedWordIndexInfo.get(input);
 			for(Word word : relatedWord.get(index)) {
+				// word.w.equals(input)) 이거 하나 처리 안해서.......몇시간을 도대체......아악!
+				// 그래도 원인 찾았다 !
+				if(word.w.equals(input)) continue;
 				word.cnt += mCount;
 			}
 		}
@@ -279,21 +282,21 @@ class UserSolution {
 		}
 		
 		// input1만 연관검색어가 있는 경우
-		if(relatedWordIndexInfo.containsKey(input1) && !relatedWordIndexInfo.containsKey(input2)) {
+		else if(relatedWordIndexInfo.containsKey(input1) && !relatedWordIndexInfo.containsKey(input2)) {
 			int index1 = relatedWordIndexInfo.get(input1);
 			relatedWordIndexInfo.put(input2, index1);
 			relatedWord.get(index1).add(wordMap.get(input2));
 		}
 
 		// input2만 연관검색어가 있는 경우
-		if(!relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
+		else if(!relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
 			int index2 = relatedWordIndexInfo.get(input2);
 			relatedWordIndexInfo.put(input1, index2);
 			relatedWord.get(index2).add(wordMap.get(input1));
 		}
 		
 		// 둘다 연관검색어를 가지고 있는 경우 두개를 합쳐야 함.
-		if(relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
+		else if(relatedWordIndexInfo.containsKey(input1) && relatedWordIndexInfo.containsKey(input2)) {
 			int index1 = relatedWordIndexInfo.get(input1);
 			int index2 = relatedWordIndexInfo.get(input2);
 			relatedWord.get(index1).addAll(relatedWord.get(index2));
