@@ -75,6 +75,8 @@ class UserSolution {
 	
 	static int Nn, Ll; // 총 선수 인원, 총 리그 개수
 	static TreeSet<Player>[] boardTreeSet;
+	static TreeSet<Player>[] upperSet;
+	static TreeSet<Player>[] lowerSet;
 	static class Player implements Comparable<Player>{
 		int id, ability;
 		
@@ -100,15 +102,36 @@ class UserSolution {
     	Nn = N;
     	Ll = L;
     	boardTreeSet = new TreeSet[L];
+    	upperSet = new TreeSet[L]; // 우선순위가 가장 높은 선수 포함
+    	lowerSet = new TreeSet[L]; // 우선순위가 중간인 선수와 우선순위가 가장 낮은 선수 포함
     	int cnt = N / L; // cnt만큼 각 리그에 선수가 분배된다.
     	
     	int id = 0;
     	for(int i=0;i<L;i++) {
     		boardTreeSet[i] = new TreeSet<>();
+    		upperSet[i] = new TreeSet<>();
+    		lowerSet[i] = new TreeSet<>();
     		for(int j=0;j<cnt;j++) {
     			Player temp = new Player(id, mAbility[id]);
     			boardTreeSet[i].add(temp);
     			id++;
+    		}
+    	}
+    	
+    	// boardTreeSet에는 정렬된 Player 정보가 들어있으니 upperSet[i], lowerSet[i]에 우선순위 나눠서 선수 분배하기
+    	for(int i=0;i<L;i++) {
+    		int index = 0;
+    		for(Player p : boardTreeSet[i]) {
+    			if(index >= cnt / 2) {
+    				// lowerSet
+    				lowerSet[i].add(p);
+    			}
+    			else {
+    				// upperSet
+    				upperSet[i].add(p);
+    			}
+    			
+    			index++;
     		}
     	}
     	 
@@ -146,8 +169,11 @@ class UserSolution {
     			boardTreeSet[i].remove(best);
     			continue;
     		}
+    		
     		Player worst = boardTreeSet[i].last();
+    		Player w = lowerSet[i].last();
     		Player best = boardTreeSet[i].first();
+    		Player b = upperSet[i].first();
     		ret += worst.id;
     		ret += best.id;
     		
