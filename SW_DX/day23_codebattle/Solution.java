@@ -1,10 +1,10 @@
 package algo.SW_DX.day23_codebattle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 class Solution {
     private static Scanner sc;
@@ -74,7 +74,7 @@ class Solution {
 class UserSolution {
 	
 	static int Nn, Ll; // 총 선수 인원, 총 리그 개수
-	static ArrayList<Player>[] boardList;
+	static TreeSet<Player>[] boardTreeSet;
 	static class Player implements Comparable<Player>{
 		int id, ability;
 		
@@ -99,14 +99,15 @@ class UserSolution {
     	// N은 L의 배수이며, N / L은 홀수이다.
     	Nn = N;
     	Ll = L;
-    	boardList = new ArrayList[L];
+    	boardTreeSet = new TreeSet[L];
     	int cnt = N / L; // cnt만큼 각 리그에 선수가 분배된다.
     	
     	int id = 0;
     	for(int i=0;i<L;i++) {
-    		boardList[i] = new ArrayList<>();
+    		boardTreeSet[i] = new TreeSet<>();
     		for(int j=0;j<cnt;j++) {
-    			boardList[i].add(new Player(id, mAbility[id]));
+    			Player temp = new Player(id, mAbility[id]);
+    			boardTreeSet[i].add(temp);
     			id++;
     		}
     	}
@@ -123,47 +124,45 @@ class UserSolution {
     	// 전체 리그에서 이동한 선수들의 ID 값의 합을 반환한다.
     	 int ret = 0;
     	 
-    	 Queue<Player>[] q = new LinkedList[Ll];
+    	Queue<Player>[] q = new LinkedList[Ll];
     	for(int i=0;i<Ll;i++) {
-    		// 1. 각 리그 능력 순으로 정렬 수행
-    		Collections.sort(boardList[i]);
     		q[i] = new LinkedList<>();
     	}
     	
     	for(int i=0;i<Ll;i++) {
     		if(i == 0) {
     			// 0번째 리그 -> 능력이 가장 좋지 않은 선수만 이동
-    			Player worst = boardList[i].get(boardList[i].size()-1);
+    			Player worst = boardTreeSet[i].last();
     			ret += worst.id;
     			q[i+1].add(worst);
-    			boardList[i].remove(boardList[i].size()-1);
+    			boardTreeSet[i].remove(worst);
     			continue;
     		}
     		else if(i == Ll-1) {
     			// L-1번째 리그 -> 능력이 가장 좋은 선수만 이동
-    			Player best = boardList[i].get(0);
+    			Player best = boardTreeSet[i].first();
     			ret += best.id;
     			q[i-1].add(best);
-    			boardList[i].remove(0);
+    			boardTreeSet[i].remove(best);
     			continue;
     		}
-    		Player worst = boardList[i].get(boardList[i].size()-1);
-    		Player best = boardList[i].get(0);
+    		Player worst = boardTreeSet[i].last();
+    		Player best = boardTreeSet[i].first();
     		ret += worst.id;
     		ret += best.id;
     		
     		// 각각의 리그에서 능력이 가장 좋지 않은 선수는 바로 아래 리그로 내려가고,
     		q[i+1].add(worst);
-			boardList[i].remove(boardList[i].size()-1);
+			boardTreeSet[i].remove(worst);
 			
 			// 리그에서 능력이 가장 좋은 선수는 바로 위 리그로 올라간다.
 			q[i-1].add(best);
-			boardList[i].remove(0);
+			boardTreeSet[i].remove(best);
     	}
     	
     	for(int i=0;i<Ll;i++) {
     		while(!q[i].isEmpty()) {
-    			boardList[i].add(q[i].poll());
+    			boardTreeSet[i].add(q[i].poll());
     		}
     	}
     	
@@ -182,32 +181,38 @@ class UserSolution {
     	Queue<Player>[] q = new LinkedList[Ll];
     	ArrayList<Player>[] removeList = new ArrayList[Ll];
 		for(int i=0;i<Ll;i++) {
-			// 1. 각 리그 능력 순으로 정렬 수행
-			Collections.sort(boardList[i]);
 			q[i] = new LinkedList<>();
 			removeList[i] = new ArrayList<>();
 		}
 		
 		for(int i=1;i<Ll;i++) {
 			// 현재 리그에서 능력이 가장 좋은 선수
-			Player best = boardList[i].get(0);
+			Player best = boardTreeSet[i].first();
 			removeList[i].add(best);
 			ret += best.id;
 			q[i-1].add(best);
 			
 			// 상위 리그에서 중간급 선수
-			int index = boardList[i-1].size() / 2;
-			Player middle = boardList[i-1].get(index);
+			int index = boardTreeSet[i-1].size() / 2;
+			Player middle = null;
+			int idx = 0;
+			for(Player p : boardTreeSet[i-1]) {
+				if(idx == index) {
+					middle = p;
+					break;
+				}
+				idx++;
+			}
 			removeList[i-1].add(middle);
 			ret += middle.id;
 			q[i].add(middle);
 		}
 		
 		for(int i=0;i<Ll;i++) {
-			boardList[i].removeAll(removeList[i]);
+			boardTreeSet[i].removeAll(removeList[i]);
 			
     		while(!q[i].isEmpty()) {
-    			boardList[i].add(q[i].poll());
+    			boardTreeSet[i].add(q[i].poll());
     		}
     	}
 
