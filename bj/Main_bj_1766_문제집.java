@@ -52,13 +52,11 @@ public class Main_bj_1766_문제집 {
 		while(!pq.isEmpty()) {
 			int temp = pq.poll();
 			
-			for(int num : graph[temp]) {
-				beSolvedFirst[num]--;
-			}
-			
 			sb.append(temp+" ");
 			
 			for(int next : graph[temp]) {
+				beSolvedFirst[next]--;
+				
 				if(beSolvedFirst[next] == 0)
 					pq.add(next);
 			}
