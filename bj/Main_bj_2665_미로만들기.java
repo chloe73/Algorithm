@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Main_bj_2665_미로만들기 {
@@ -34,6 +35,7 @@ public class Main_bj_2665_미로만들기 {
 
 	private static void solve() {
 		Queue<int[]> q = new LinkedList<>();
+//		Queue<int[]> q = new PriorityQueue<>((o1,o2) -> (o1[2] - o2[2]));
 		int[][] visited = new int[N][N];
 		for(int i=0;i<N;i++) {
 			Arrays.fill(visited[i], Integer.MAX_VALUE);
