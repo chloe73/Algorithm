@@ -38,15 +38,14 @@ public class Main_bj_2665_미로만들기 {
 		for(int i=0;i<N;i++) {
 			Arrays.fill(visited[i], Integer.MAX_VALUE);
 		}
-		q.add(new int[] {0,0,0,0});
+		q.add(new int[] {0,0,0});
 		visited[0][0] = 0;
 		
 		while(!q.isEmpty()) {
 			int[] temp = q.poll();
 			int x = temp[0];
 			int y = temp[1];
-			int dist = temp[2];
-			int cnt = temp[3];
+			int cnt = temp[2];
 			
 			if(x == N-1 && y == N-1) {
 				result = Math.min(result, cnt);
@@ -62,10 +61,10 @@ public class Main_bj_2665_미로만들기 {
 				if(visited[nx][ny] > cnt) {
 					visited[nx][ny] = cnt;
 					if(board[nx][ny] == '0') {
-						q.add(new int[] {nx,ny,dist+1,cnt+1});
+						q.add(new int[] {nx,ny,cnt+1});
 					}
 					else {
-						q.add(new int[] {nx,ny,dist+1,cnt});
+						q.add(new int[] {nx,ny,cnt});
 					}
 				}
 			
