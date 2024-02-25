@@ -151,62 +151,11 @@ class UserSolution {
 		// 고유번호가 mFrom인 대여소에서 고유번호가 mTo인 대여소까지 이동할 때의 최단 거리를 반환한다.
 		// 사용자가 전기차를 빌렸을 때, 배터리는 가득 충전되어 있다.
 		// mFrom과 mTo는 기존에 설치된 대여소이며, 서로 다르다.
-		int startX = rentalMap.get(mFrom).x;
-		int startY = rentalMap.get(mFrom).y;
-		
-		int endX = rentalMap.get(mTo).x;
-		int endY = rentalMap.get(mTo).y;
 		
 		int[] dx = {-1,1,0,0};
 		int[] dy = {0,0,-1,1};
-		
-		boolean[][][] visited = new boolean[Nn][Nn][range+1];
-//		for(int i=0;i<Nn;i++) {
-//			Arrays.fill(visited[i], Integer.MAX_VALUE);
-//		}
-		PriorityQueue<Node> pq = new PriorityQueue<>();
-		pq.add(new Node(startX, startY, 0, 0));
-		visited[startX][startY][0] = true;
-		
 		int ret = Integer.MAX_VALUE;
-		while(!pq.isEmpty()) {
-			Node temp = pq.poll();
-			
-			if(temp.battery > range) continue;
-			
-			if(temp.x == endX && temp.y == endY) {
-				ret = Math.min(ret, temp.dist);
-				continue;
-			}
-			
-			for(int d=0;d<4;d++) {
-				int nx = temp.x + dx[d];
-				int ny = temp.y + dy[d];
-				
-				if(!isValid(nx, ny) || board[nx][ny] == 1) continue;
-				
-				if(visited[nx][ny][temp.battery]) continue;
-				
-				// 범위를 벗어나지도 않고
-				// 장애물도 없고
-				// 이동 가능한 range 내에 있으면
-				
-				if(temp.battery + 1 == range && board[nx][ny] < 200) continue;
-				
-				if(temp.battery + 1 <= range) {
-					visited[nx][ny][temp.battery] = true;
-					
-					// nx, ny 위치가 대여소인 경우
-					if(board[nx][ny] >= 200) {
-						pq.add(new Node(nx, ny, temp.dist+1, 0));
-						continue;
-					}
-					
-					pq.add(new Node(nx, ny, temp.dist+1, temp.battery+1));
-				}
-			}
-			
-		}
+		
 		
 		
 		// Parameter
