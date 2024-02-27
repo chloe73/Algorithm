@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_bj_1486_등산 {
@@ -49,14 +50,20 @@ public class Main_bj_1486_등산 {
 		for(int i=0;i<N;i++) {
 			String s = br.readLine();
 			for(int j=0;j<M;j++) {
-				board[i][j] = s.charAt(j) >= 'a' ? s.charAt(j)-'a' : s.charAt(j)-'A';
+				char ch = s.charAt(j);
+
+                if(ch >= 'A' && ch <= 'Z') board[i][j] = ch - 65;
+                else if(ch >= 'a' && ch <= 'z') board[i][j] = ch - 71;
+				
+//				board[i][j] = s.charAt(j) >= 'a' ? s.charAt(j)-'a' + 26 : s.charAt(j)-'A';
 			}
 		} // input end
 		result = 0;
 		
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<M;j++) {
-				solve(i,j);
+//				solve(i,j);
+				Dijkstra(i, j);
 			}
 		}
 		
@@ -102,6 +109,42 @@ public class Main_bj_1486_등산 {
 		}
 		
 	}
+	
+	private static void Dijkstra(int xx, int yy){
+
+        Queue<Node> Q = new PriorityQueue<>();
+        dist[xx][yy][xx][yy] = 0;
+        Q.add(new Node(xx, yy, 0));
+
+        while(!Q.isEmpty()){
+            Node p = Q.poll();
+            
+            int x = p.x;
+            int y = p.y;
+            int time = p.d;
+
+            if(dist[x][y][xx][yy] < time) continue;
+
+            for(int a=0; a<4; a++){
+            	int nx = x+dx[a];
+                int ny = y+dy[a];
+                int nTime;
+
+                if(!isValid(nx, ny)) continue;
+                if(Math.abs(board[x][y] - board[nx][ny]) > T) continue;
+
+                if(board[nx][ny] <= board[x][y])
+                    nTime = time + 1;
+                else
+                    nTime = (int) Math.pow((board[nx][ny] - board[x][y]), 2) + time;
+
+                if(dist[nx][ny][xx][yy] > nTime && nTime <= D){
+                	dist[nx][ny][xx][yy] = nTime;
+                    Q.add(new Node(nx,ny,nTime));
+                }
+            }
+        }
+    }
 	
 	private static boolean isValid(int r, int c) {
 		if(r<0 || c<0 || r>=N || c>=M) return false;
