@@ -3,15 +3,15 @@ package algo.bj;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Main_bj_2668_숫자고르기 {
 
 	static int N;
-	static boolean flag;
-	static int[][] board;
-	static boolean[] isChecked;
+	static int[] arr;
+	static ArrayList<Integer> result;
+	static boolean[] visited;
 	static StringBuilder sb;
 	
 	public static void main(String[] args) throws IOException{
@@ -20,61 +20,37 @@ public class Main_bj_2668_숫자고르기 {
 		
 		N = Integer.parseInt(br.readLine());
 		
-		board = new int[2][N];
-		for(int i=0;i<N;i++) {
-			board[0][i] = i+1;
-		}
+		arr = new int[N+1];
 		
-		for(int i=0;i<N;i++) {
-			board[1][i] = Integer.parseInt(br.readLine());
+		for(int i=1;i<=N;i++) {
+			arr[i] = Integer.parseInt(br.readLine());
 		} // input end
 		
-		isChecked = new boolean[N];
-		flag = false;
-		for(int i=N;i>=1;i--) {
-			solve(0, 0, i);
-			if(flag)
-				break;
+		visited = new boolean[N+1];
+		result = new ArrayList<>();
+		for(int i=1;i<=N;i++) {
+			visited[i] = true;
+			dfs(i,i);
+			visited[i] = false;
 		}
-		
+		Collections.sort(result);
+		sb.append(result.size()+"\n");
+		for(int i : result) {
+			sb.append(i+"\n");
+		}
 		System.out.println(sb.toString());
 	}
 
-	private static void solve(int idx, int cnt, int num) {
-		
-		if(cnt == num) {
-			if(check()) flag = true;
-			return;
+	private static void dfs(int value, int idx) {
+		if(!visited[arr[value]]) {
+			visited[arr[value]] = true;
+			dfs(arr[value], idx);
+			visited[arr[value]] = false;
 		}
 		
-		for(int i=idx;i<N;i++) {
-			isChecked[i] = true;
-			solve(i+1, cnt+1, num);
-			isChecked[i] = false;
+		if(arr[value] == idx) {
+			result.add(arr[value]);
 		}
 	}
-	
-	private static boolean check() {
-		
-		TreeSet<Integer> aSet = new TreeSet<>();
-		HashSet<Integer> bSet = new HashSet<>();
-		
-		for(int i=0;i<N;i++) {
-			if(isChecked[i]) {
-				aSet.add(board[0][i]);
-				bSet.add(board[1][i]);
-			}
-		}
-		
-		for(int i : aSet) {
-			if(!bSet.contains(i)) return false;
-		}
-		
-		sb.append(aSet.size()+"\n");
-		for(int i : aSet) {
-			sb.append(i+"\n");
-		}
-		
-		return true;
-	}
+
 }
