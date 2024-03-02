@@ -78,7 +78,7 @@ public class Main_bj_10282_해킹 {
 			Node temp = pq.poll();
 			
 			for(Node next : graph[temp.to]) {
-				if(dist[next.to] > dist[temp.to] + temp.time) {
+				if(dist[next.to] > dist[temp.to] + next.time) {
 					dist[next.to] = dist[temp.to] + next.time;
 					pq.add(new Node(next.to, dist[next.to]));
 				}
