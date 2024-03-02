@@ -98,10 +98,10 @@ class UserSolution {
 	static class Seg implements Comparable<Seg> {
 		int id; // 파일 id
 		int start, end;
-		public Seg(int id, int idx, int size) {
+		public Seg(int id, int start, int end) {
 			this.id = id;
-			this.start = idx;
-			this.end = size;
+			this.start = start;
+			this.end = end;
 		}
 		public int compareTo(Seg o) {
 			return this.start - o.start;
@@ -216,6 +216,45 @@ class UserSolution {
 			segPq.add(s);
 			treeSet.remove(s);
 			// 만약 연결되는 seg가 있다면 합치는 작업 필요
+		}
+		
+		// 파편화된 저장공간 연속되는 구간이 있으면 합치는 작업 수행
+		if(segPq.size() >= 2) {
+			PriorityQueue<Seg> pq = new PriorityQueue<>();
+			
+			Seg before = segPq.poll();
+			pq.add(before);
+			
+			Seg renewal = new Seg(0, before.start, before.end);
+			boolean isFind = false;
+			while(!segPq.isEmpty()) {
+				Seg s = segPq.poll();
+				
+				if(before.end+1 < s.start) {
+					if(isFind) {
+						isFind = false;
+						// 합쳐진 seg
+						pq.add(renewal);
+						renewal = new Seg(0, s.start, s.end);
+					}
+					renewal.start = s.start;
+					renewal.end = s.end;
+					if(segPq.size() == 0 || (segPq.size() > 0 && s.end+1 < segPq.peek().start))
+						pq.add(s);
+					
+					before = s;
+					continue;
+				}
+				
+				// 이전 seg의 end와 현재 seg의 start가 바로 이어지는 경우
+				if(before.end+1 == s.start) {
+					isFind = true;
+					renewal = new Seg(0, renewal.start, s.end);
+					before = s;
+				}
+				
+			}
+			segPq = pq;
 		}
 		
 		fileMap.remove(mId);
