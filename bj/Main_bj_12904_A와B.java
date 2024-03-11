@@ -12,15 +12,18 @@ public class Main_bj_12904_A와B {
 		String s = br.readLine();
 		String t = br.readLine();
 		
-		while (s.length() < t.length()) {
-			StringBuffer sb = new StringBuffer();
-			if (t.endsWith("A")) {
-				t = t.substring(0, t.length() - 1);
-			} else if (t.endsWith("B")) {
-				t = t.substring(0, t.length() - 1);
+		while(s.length() < t.length()) {
+			StringBuilder sb = new StringBuilder();
+			// 문자열의 뒤에 A를 추가한다.
+			if(t.endsWith("A")) {
+				t = t.substring(0,t.length()-1);
+			}
+			// 문자열을 뒤집고 뒤에 B를 추가한다.
+			else if(t.endsWith("B")) {
+				t = t.substring(0,t.length()-1);
 				t = sb.append(t).reverse().toString();
 			}
-        }
+		}
 		
 		if(s.equals(t))
 			System.out.println(1);
