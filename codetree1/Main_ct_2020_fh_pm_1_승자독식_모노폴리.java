@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 	
@@ -14,7 +14,7 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 	// 1은 위, 2는 아래, 3은 왼쪽, 4는 오른쪽
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static HashMap<Integer, Player> playerMap;
+	static TreeMap<Integer, Player> playerMap;
 	static class Player {
 		int x,y,d;
 		int[][] dirOrder;
@@ -30,12 +30,12 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken()); // 격자 크기
+		M = Integer.parseInt(st.nextToken()); // 플레이어 수
+		K = Integer.parseInt(st.nextToken()); // 독점 계약 턴 수
 
 		board = new int[N][N][2];
-		playerMap = new HashMap<>();
+		playerMap = new TreeMap<>();
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++) {
@@ -71,12 +71,8 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 	private static void solve() {
 		
 		boolean flag = false;
+		result = 0;
 		while(result++ < 1000) {
-			// 1번 플레이어만 남게 되기까지 걸린 턴의 수
-			if(playerMap.size() == 1 && playerMap.containsKey(1)) {
-				flag = true;
-				break;
-			}
 			
 			// 각 플레이어들은 한 칸씩 이동합니다.
 			boolean[][] visited = new boolean[N][N];
@@ -95,6 +91,12 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 						board[i][j][1] = 0;
 					}
 				}
+			}
+
+			// 1번 플레이어만 남게 되기까지 걸린 턴의 수
+			if(playerMap.size() == 1 && playerMap.containsKey(1)) {
+				flag = true;
+				break;
 			}
 		}
 		
@@ -152,8 +154,8 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 					playerMap.get(i).x = nx;
 					playerMap.get(i).y = ny;
 					playerMap.get(i).d = d;
-					board[nx][ny][0] = i;
-					board[nx][ny][1] = K;
+//					board[nx][ny][0] = i;
+//					board[nx][ny][1] = K;
 				}
 				else {
 					if(arr[nx][ny] < i) {
@@ -166,8 +168,8 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 						playerMap.get(i).x = nx;
 						playerMap.get(i).y = ny;
 						playerMap.get(i).d = d;
-						board[nx][ny][0] = i;
-						board[nx][ny][1] = K;
+//						board[nx][ny][0] = i;
+//						board[nx][ny][1] = K;
 					}
 				}
 			}
@@ -180,10 +182,17 @@ public class Main_ct_2020_fh_pm_1_승자독식_모노폴리 {
 				playerMap.remove(i);
 			}
 		}
+		
+		for(int i : playerMap.keySet()) {
+			Player p = playerMap.get(i);
+			
+			board[p.x][p.y][0] = i;
+			board[p.x][p.y][1] = K;
+		}
 	}
 
 	private static boolean isValid(int r, int c) {
-		if(r<0 || c<0 || r>=4 || c>=4) return false;
+		if(r<0 || c<0 || r>=N || c>=N) return false;
 		return true;
 	}
 }
