@@ -20,7 +20,7 @@ public class Main_bj_5525_IOIOI {
 		// N = 2
 		// OO IOIOI OIIOII
 		// OOIO IOIOI IOII
-		int[] memo = new int[M];
+		int[] memo = new int[M]; // 현재 칸까지 'OI'가 몇 개 반복되었는지
 		for(int i=1;i<M-1;i++) {
 			if(arr[i] == 'O' && arr[i+1] == 'I') {
 				memo[i+1] = memo[i-1] + 1;
