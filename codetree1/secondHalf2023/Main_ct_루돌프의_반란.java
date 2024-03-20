@@ -1,4 +1,4 @@
-package algo.codetree1.secondHalf;
+package algo.codetree1.secondHalf2023;
 
 import java.io.BufferedReader;
 import java.io.IOException;
