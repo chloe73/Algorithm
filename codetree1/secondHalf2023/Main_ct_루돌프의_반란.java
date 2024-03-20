@@ -67,8 +67,9 @@ public class Main_ct_루돌프의_반란 {
 	}
 
 	private static void solve() {
-		
+//		M 번의 턴에 걸쳐 루돌프, 산타가 순서대로 움직인 이후 게임이 종료됩니다.
 		while(M-- >0) {
+//			만약 P 명의 산타가 모두 게임에서 탈락하게 된다면 그 즉시 게임이 종료됩니다.
 			boolean flag = false;
 			for(int i : santaMap.keySet()) {
 				if(!santaMap.get(i).isFail) {
@@ -99,7 +100,7 @@ public class Main_ct_루돌프의_반란 {
 					}
 				}
 				
-				// 살아남은 산타 점수 1 획득
+//				매 턴 이후 아직 탈락하지 않은 산타들에게는 1점씩을 추가로 부여합니다.
 				if(!temp.isFail) {
 					result[i]++;
 				}
@@ -232,8 +233,9 @@ public class Main_ct_루돌프의_반란 {
 			Santa temp = santaMap.get(i);
 			
 //			단, 게임에서 탈락하지 않은 산타 중 가장 가까운 산타를 선택해야 합니다.
-			if(temp.isFaint) continue;
 			if(temp.isFail) continue;
+//			루돌프는 기절한 산타를 돌진 대상으로 선택할 수 있습니다.
+//			if(temp.isFaint) continue;
 			
 			int dist = getDist(rx, ry, temp.x, temp.y);
 			
@@ -285,11 +287,12 @@ public class Main_ct_루돌프의_반란 {
 		ry = ry2;
 		
 //		루돌프가 움직여서 충돌이 일어난 경우, 해당 산타는 C만큼의 점수를 얻게 됩니다. 
-//		이와 동시에 산타는 루돌프가 이동해온 방향으로 C 칸 만큼 밀려나게 됩니다.
 		if(tx == rx2 && ty == ry2) {
-			int num = sBoard[tx][ty];
+			int num = sBoard[tx][ty]; // 충돌한 산타 번호
 			result[num] += C;
 			sBoard[tx][ty] = 0;
+			
+//			이와 동시에 산타는 루돌프가 이동해온 방향으로 C 칸 만큼 밀려나게 됩니다.
 			int nx = tx + dx[dir] * C;
 			int ny = ty + dy[dir] * C;
 			
@@ -303,21 +306,30 @@ public class Main_ct_루돌프의_반란 {
 			if(sBoard[nx][ny] > 0) {
 //				산타는 충돌 후 착지하게 되는 칸에 다른 산타가 있다면 그 산타는 1칸 해당 방향으로 밀려나게 됩니다. 
 //				그 옆에 산타가 있다면 연쇄적으로 1칸씩 밀려나는 것을 반복하게 됩니다. 게임판 밖으로 밀려나오게 된 산타의 경우 게임에서 탈락됩니다.
-				int number = num;
+				int number = num; // 현재 산타 번호
 				santaMap.get(num).isFaint = true;
 				santaMap.get(num).faintTime = 2;
-				while(isValid(nx, ny) && sBoard[nx][ny]>0) {
-					int tmp = sBoard[nx][ny];
-					sBoard[nx][ny] = number;
-					santaMap.get(number).x = nx;
-					santaMap.get(number).y = ny;
-					number = tmp;
+				while(isValid(nx, ny)) {
+					if(sBoard[nx][ny] > 0) {
+						int tmp = sBoard[nx][ny];
+						sBoard[nx][ny] = number;
+						santaMap.get(number).x = nx;
+						santaMap.get(number).y = ny;
+						number = tmp;						
+					}
+					else {
+						sBoard[nx][ny] = number;
+						santaMap.get(number).x = nx;
+						santaMap.get(number).y = ny;
+						break;
+					}
 					nx += dx[dir];
 					ny += dy[dir];
 					if(!isValid(nx, ny) && number > 0) {
 						santaMap.get(number).isFail = true;
 						break;
 					}
+					
 				}
 				return;
 			}
@@ -330,6 +342,7 @@ public class Main_ct_루돌프의_반란 {
 			sBoard[nx][ny] = num;
 		}
 		
+		return;
 	}
 	
 	private static int changeDir(int d) {
