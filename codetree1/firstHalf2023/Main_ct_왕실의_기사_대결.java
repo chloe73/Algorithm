@@ -31,10 +31,6 @@ public class Main_ct_왕실의_기사_대결 {
 			damage = 0;
 		}
 	}
-	static class Result {
-		Stack<Integer> stack;
-		
-	}
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
