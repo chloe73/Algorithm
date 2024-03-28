@@ -100,6 +100,9 @@ public class Main_ct_포탑_부수기 {
 
 			// 3. 포탑 부서짐 & 4. 포탑 정비
 			setting_top();
+			
+			print();
+			System.out.println(" =================== ");
 		}
 		
 		// 전체 과정이 종료된 후 남아있는 포탑 중 가장 강한 포탑의 공격력을 출력
