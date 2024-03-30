@@ -80,7 +80,6 @@ class Solution_호텔_대실 {
             //System.out.println("2새로운 방에 추가");
         }
         
-        
         answer = pq2.size();
         return answer;
     }
