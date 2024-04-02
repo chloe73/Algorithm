@@ -27,7 +27,8 @@ public class Main_bj_1863_스카이라인_쉬운거 {
 				stack.pop();
 			}
 			
-			while(!stack.isEmpty() && stack.peek() == y) {
+			// 현재 높이랑 같은 경우에는 같은 빌딩인 경우이니 pass
+			if(!stack.isEmpty() && stack.peek() == y) {
 				continue;
 			}
 			
