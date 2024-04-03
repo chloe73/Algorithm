@@ -8,7 +8,6 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-
 public class Main_ct_싸움땅 {
 	
 	static int N,M,K;
