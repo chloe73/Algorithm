@@ -153,7 +153,7 @@ public class Main_ct_술래잡기 {
 		int d = 0;
 		int cnt = 1;
 		int num = 0;
-		route.add(new int[] {x,y,d});
+		route.add(new int[] {x,y,d,d});
 		
 		outer:while(!(x == 0 && y == 0)) {
 			
