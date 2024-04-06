@@ -3,6 +3,7 @@ package algo.codetree1.firstHalf2022;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,13 +51,115 @@ public class Main_ct_예술성 {
 	}
 
 	private static void rotate() {
-		// TODO Auto-generated method stub
+		// 90도 시계방향 회전
+		int[][] arr = new int[N][N];
+		for(int i=0;i<N;i++) {
+			arr[i] = Arrays.copyOf(board[i], N);
+		}
 		
+		int x = 0;
+		int y = 0;
+		int size = N/2;
+		for(int i=0;i<size;i++) {
+			for(int j=0;j<size;j++) {
+				arr[j][size-i-1] = board[i][j];
+				
+				x = 0;
+				y = N/2+1;
+				arr[j][N-1-i] = board[x+i][y+j];
+
+				x = N/2+1;
+				y = 0;
+				arr[x+j][size-i-1] = board[x+i][y+j];
+
+				x = N/2+1;
+				y = N/2+1;
+				arr[x+j][N-1-i] = board[x+i][y+j];				
+			}
+		}
+
+		board = arr;
 	}
 
 	private static void rotateMiddle() {
-		// TODO Auto-generated method stub
+		int[][] arr = new int[N][N];
+		for(int i=0;i<N;i++) {
+			arr[i] = Arrays.copyOf(board[i], N);
+		}
 		
+		int x = N/2-1;
+		int y = N/2;
+		int cnt = 1;
+		while(isValid(x, y)) {
+			int nx = x;
+			int ny = y;
+			// left
+			nx += dx[3]*cnt;
+			ny += dy[3]*cnt;
+			// down
+			nx += dx[2]*cnt;
+			ny += dy[2]*cnt;
+			
+			arr[nx][ny] = board[x][y];
+			x -= 1;
+			cnt++;
+		}
+		
+		x = N/2;
+		y = N/2-1;
+		cnt = 1;
+		while(isValid(x, y)) {
+			int nx = x;
+			int ny = y;
+			
+			nx += dx[2]*cnt;
+			ny += dy[2]*cnt;
+			
+			nx += dx[1]*cnt;
+			ny += dy[1]*cnt;
+			
+			arr[nx][ny] = board[x][y];
+			y -= 1;
+			cnt++;
+		}
+		
+		x = N/2+1;
+		y = N/2;
+		cnt = 1;
+		while(isValid(x, y)) {
+			int nx = x;
+			int ny = y;
+			
+			nx += dx[1]*cnt;
+			ny += dy[1]*cnt;
+			
+			nx += dx[0]*cnt;
+			ny += dy[0]*cnt;
+			
+			arr[nx][ny] = board[x][y];
+			x++;
+			cnt++;
+		}
+		
+		x = N/2;
+		y = N/2+1;
+		cnt = 1;
+		while(isValid(x, y)) {
+			int nx = x;
+			int ny = y;
+			
+			nx += dx[0]*cnt;
+			ny += dy[0]*cnt;
+			
+			nx += dx[3]*cnt;
+			ny += dy[3]*cnt;
+			
+			arr[nx][ny] = board[x][y];
+			y++;
+			cnt++;
+		}
+		
+		board = arr;
 	}
 
 	private static void makeGroup() {
@@ -99,7 +202,6 @@ public class Main_ct_예술성 {
 			}
 		}
 		
-		
 		// 그룹 쌍 간의 조화로움 값이 0보다 큰 조합인 (G1, G2), (G2, G3), (G2, G4), (G3, G4) 의 조화로움 값을 전부 더하면 
 		// 48 + 192 + 152 + 156 = 548이 됩니다. 이를 초기 예술 점수라 부르겠습니다.
 		HashSet<int[]> set = new HashSet<>(); // 그룹 쌍 정보
@@ -112,6 +214,7 @@ public class Main_ct_예술성 {
 					q.add(new int[] {i,j});
 					visited[i][j] = true;
 					boolean[] isChecked = new boolean[map.size()+1];
+					int[] byun = new int[map.size()+1];
 					
 					while(!q.isEmpty()) {
 						int[] temp = q.poll();
@@ -126,14 +229,25 @@ public class Main_ct_예술성 {
 							
 							if(group[x][y] != group[nx][ny] && !isChecked[group[nx][ny]]) {
 								isChecked[group[nx][ny]] = true;
-								set.add(new int[] {group[x][y], group[nx][ny]});
+								byun[group[nx][ny]]++;
+								//set.add(new int[] {group[x][y], group[nx][ny]});
 								continue;
+							}
+							
+							if(group[x][y] != group[nx][ny] && isChecked[group[nx][ny]]) {
+								byun[group[nx][ny]]++;
 							}
 							
 							if(group[x][y] == group[nx][ny]) {
 								visited[nx][ny] = true;
 								q.add(new int[] {nx,ny});
 							}
+						}
+					}
+					
+					for(int k=1;k<map.size()+1;k++) {
+						if(isChecked[k]) {
+							set.add(new int[] {group[i][j], k, byun[k]});
 						}
 					}
 				}
@@ -145,7 +259,11 @@ public class Main_ct_예술성 {
 		// x 그룹 a를 이루고 있는 숫자 값 x 그룹 b를 이루고 있는 숫자 값 
 		// x 그룹 a와 그룹 b가 서로 맞닿아 있는 변의 수로 정의됩니다.
 		for(int[] arr : set) {
+			int[] a = map.get(arr[0]); // cnt, num 순서
+			int[] b = map.get(arr[1]);
 			
+			int art = (a[0]+b[0]) * a[1] * b[1] * arr[2];
+			result += art;
 		}
 	}
 	
