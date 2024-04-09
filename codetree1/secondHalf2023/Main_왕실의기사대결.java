@@ -218,28 +218,24 @@ public class Main_왕실의기사대결 {
 			if(index == i) continue; 
 			
 			if(damageNum[index] > 0) {
+				// damage가 해당 기사의 체력보다 크거나 같은 경우 -> board에서 사라짐.
 				if(kMap.get(index).k - damageNum[index] <= 0) {
 					kMap.get(index).isDead = true;
 					kMap.get(index).x += dx[d];
 					kMap.get(index).y += dy[d];
 					isChecked[index] = false;
 					continue;
-//					for(int x=kMap.get(index).x;x<kMap.get(index).x+kMap.get(index).h;x++) {
-//						for(int y=kMap.get(index).y;y<kMap.get(index).y+kMap.get(index).w;y++) {
-//							renewalKBoard[x][y] = 0;
-//						}
-//					}
 				}
 				
 			}
-			
+			// 현재 연쇄적으로 밀리는 기사이면서 현재 받은 데미지가 체력보다 작은 경우는 살아남는다.
 			if(isChecked[index] && kMap.get(index).k - damageNum[index] > 0) {
 				kMap.get(index).x += dx[d];
 				kMap.get(index).y += dy[d];
 				kMap.get(index).damage += damageNum[index];
 				kMap.get(index).k -= damageNum[index];				
 			}
-
+			// 이번 이동에서 전혀 영향 안 받은 기사들은 그대로 값 넣어준다.
 			if(!isChecked[index] && !kMap.get(index).isDead) {
 				Knight tmp = kMap.get(index);
 				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
@@ -250,9 +246,10 @@ public class Main_왕실의기사대결 {
 			}
 		}
 		
+		// stack => 연쇄적으로 이동하는 기사 순서를 뒤집기 위해서 사용함.
 		while(!stack.isEmpty()) {
 			ArrayList<Integer> list = stack.pop();
-			
+			// 연쇄 작용 가장 마지막에 영향 받는 기사부터 board에 값을 넣어준다.
 			for(int index : list) {
 				Knight tmp = kMap.get(index);
 				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
