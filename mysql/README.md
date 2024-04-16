@@ -130,3 +130,27 @@ SELECT CONV(88, 10, 16);
 ```
 
 ---
+
+### ✅ 문자열 합치기 : CONCAT
+
+- 일반적인 프로그래밍 언어에서는 +를 이용해서 문자열의 합칠 수 있지만, MySQL에서는 CONCAT()함수를 이용하여 문자열을 합친다.
+
+```SQL
+SELECT CONCAT('HELLO', ' ', 'THIS IS ', 2021);
+```
+
+- CONCAT을 이용하여 데이터에 문자열을 추가로 더 붙여서 표현할 수도 있다.
+
+```SQL
+SELECT CONCAT('O-ID: ', OrderID) FROM Orders;
+```
+
+- CONCAT_WS(S, {문자1},{문자2})은 여러문자들을 S를 이용해서 연결해준다.
+
+```SQL
+SELECT
+  CONCAT_WS(' ', FirstName, LastName) AS FullName
+FROM Employees;
+```
+
+---
