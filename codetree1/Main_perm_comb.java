@@ -1,7 +1,5 @@
 package algo.codetree1;
 
-import java.util.Arrays;
-
 public class Main_perm_comb {
 
 	static int N;
