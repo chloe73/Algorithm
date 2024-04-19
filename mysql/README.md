@@ -154,3 +154,7 @@ FROM Employees;
 ```
 
 ---
+
+### ✅ IFNULL(expression, alt_value)
+
+- 데이터가 NULL인 데이터를 다른 값으로 출력한다.
