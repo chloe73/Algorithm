@@ -158,3 +158,40 @@ FROM Employees;
 ### ✅ IFNULL(expression, alt_value)
 
 - 데이터가 NULL인 데이터를 다른 값으로 출력한다.
+
+---
+
+### ✅ IS NULL / IS NOT NULL
+
+- =, <>와 같은 비교 연산자로는 NULL을 조회할 수 없다. 따라서 NULL을 조회할 때에는 IS NULL, IS NOT NULL연산자를 사용해야 한다.
+
+- IS NULL은 NULL인 데이터를, IS NOT NULL은 NULL이 아닌 테이터를 조회한다.
+
+```SQL
+IS NULL
+SELECT column_names
+FROM table_name
+WHERE column_name IS NULL;
+```
+
+```SQL
+# 예시
+
+SELECT ANIMAL_ID, NAME
+FROM ANIMAL_INS
+WHERE 1=1
+AND NAME IS NULL;
+```
+
+---
+
+### ✅ COALESCE()
+
+- 목록에서 NULL이 아닌 첫 번째 값을 반환한다.
+
+COALESCE(val1, val2, ...., val_n)
+
+```SQL
+# 예시
+SELECT COALESCE(NULL, NULL, NULL, 'tistory', NULL, 'passwd');
+```
