@@ -195,3 +195,68 @@ COALESCE(val1, val2, ...., val_n)
 # 예시
 SELECT COALESCE(NULL, NULL, NULL, 'tistory', NULL, 'passwd');
 ```
+
+---
+
+### ✅ Mysql의 SUBSTRING() 함수
+
+- Mysql의 SUBSTR() 함수와 동의어로 조회하는 문자열의 일부를 잘라내기로 추출하는 Mysql의 함수입니다. 이는 Mysql 뿐만아니라 업무용 프로그램및 SQL문을 사용하면서 가장 많이 사용하는 함수입니다.
+
+SUBSTRING(문자열 , 시작위치, 길이)
+SUBSTRING(문자열 , 시작위치, 길이)
+
+```SQL
+SELECT SUBSTRING("WWW.Google.COM", 3);
+SELECT SUBSTRING("WWW.Google.COM", 3, 5);
+SELECT SUBSTRING("WWW.Google.COM" FROM 5);
+SELECT SUBSTRING("WWW.Google.COM" FROM 2 FOR 2);
+
+#W.Google.COM
+#W.Goo
+#Google.COM
+#WW
+```
+
+### ✅ Mysql의 LEFT() 함수
+
+- 조회하는 문자열의 일부를 추출하는 Mysql의 함수로써 왼쪽부터 잘라내어 반환하는 함수입니다.
+
+LEFT(문자열, 길이)
+
+```SQL
+SELECT LEFT("WWW.Google.COM", 3);
+SELECT LEFT("WWW.Google.COM", 5);
+
+#WWW
+#WWW.G
+```
+
+### ✅ Mysql의 RIGHT() 함수
+
+- 조회하는 문자열의 일부를 추출하는 Mysql의 함수로써 오른쪽부터 잘라내어 반환하는 함수입니다.
+
+RIGHT(문자열, 길이)
+
+```SQL
+SELECT RIGHT("WWW.Google.COM", 3);
+SELECT RIGHT("WWW.Google.COM", 5);
+
+#COM
+#e.COM
+
+```
+
+### ✅ Mysql의 SUBSTRING_INDEX() 함수
+
+- 조회하는 문자열의 일부를 추출하는 Mysql의 함수로써 구분자와 구분자 숫자만큼 잘라내어 반환하는 함수입니다.
+
+SUBSTRING_INDEX(문자열, 구분자, 구분자 Index)
+
+```SQL
+SELECT SUBSTRING_INDEX("010-5678-9999", "-" , 2);
+SELECT SUBSTRING_INDEX("www.Google.com", "." , 2);
+
+#010-5678
+#www.Google
+
+```
