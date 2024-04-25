@@ -27,7 +27,15 @@
 
 ---
 
-✔ CEIL(), FLOOR(), ROUND(): 올림/버림/반올림
+# ✅ MYSQL - Date
+
+<img width="546" alt="스크린샷 2024-04-25 오후 3 07 52" src="https://github.com/chloe73/Algorithm/assets/50287759/820e1ecd-b4cd-4ca9-bf2b-76f344b5db80">
+<img width="546" alt="스크린샷 2024-04-25 오후 3 08 09" src="https://github.com/chloe73/Algorithm/assets/50287759/ee43f6bd-8f59-4e0c-9c25-6e2e975a76f8">
+<img width="546" alt="스크린샷 2024-04-25 오후 3 08 29" src="https://github.com/chloe73/Algorithm/assets/50287759/08f857be-98c3-40ef-9d21-66b5e7fc3a85">
+
+---
+
+### ✔ CEIL(), FLOOR(), ROUND(): 올림/버림/반올림
 
 ```mysql
 SELECT CEIL(10, 1) ... #소수점 첫째자리에서 올림
