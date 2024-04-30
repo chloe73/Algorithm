@@ -76,29 +76,31 @@ public class Main_bj_24042 {
 			
 			for(Node next : graph[p.num]) {
 				
-				int s = p.beforeSignal; 
-				int[] signal = cmd.get(s);
-//				if((signal[0] == p.num || signal[1] == p.num) && (signal[0] == next.to || signal[1] == next.to)
-//						&& visited[next.to] > p.time+1) {
-//					visited[next.to] = p.time+1;
-//					pq.add(new Point(next.to, p.time+1, s));
-//					continue;
-//				}
-
-				int t = 0;
-				while(true) {
-					s = change_signal(s);
-					signal = cmd.get(s);
-					t++;
-					
-					if((signal[0] == p.num || signal[1] == p.num) && (signal[0] == next.to || signal[1] == next.to)) {
-						break;
-					}
+				int time = 0;
+				if(p.beforeSignal <= next.signal) {
+					time = next.signal - p.beforeSignal;
+				}
+				else if(p.beforeSignal > next.signal) {
+					time = M-p.beforeSignal+next.signal;
 				}
 				
-				if(visited[next.to] > p.time+t) {
-					visited[next.to] = p.time+t;
-					pq.add(new Point(next.to, p.time+t, s));					
+//				int s = p.beforeSignal; 
+//				int[] signal = cmd.get(s);
+
+//				int t = 0;
+//				while(true) {
+//					s = change_signal(s);
+//					signal = cmd.get(s);
+//					t++;
+//					
+//					if((signal[0] == p.num || signal[1] == p.num) && (signal[0] == next.to || signal[1] == next.to)) {
+//						break;
+//					}
+//				}
+				
+				if(visited[next.to] > p.time+time) {
+					visited[next.to] = p.time+time;
+					pq.add(new Point(next.to, p.time+time, next.signal));					
 				}
 			}
 		}
