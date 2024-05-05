@@ -12,6 +12,7 @@ public class Main_bj_11403 {
 	
 	static int N;
 	static ArrayList<Integer>[] graph;
+	static int[][] board;
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,11 +21,13 @@ public class Main_bj_11403 {
 		for(int i=1;i<=N;i++) {
 			graph[i] = new ArrayList<>();
 		}
+		board = new int[N+1][N+1];
 		
 		for(int i=1;i<=N;i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			for(int j=1;j<=N;j++) {
 				int flag = Integer.parseInt(st.nextToken());
+				board[i][j] = flag;
 				if(flag == 1) {
 					graph[i].add(j);
 				}
@@ -33,17 +36,34 @@ public class Main_bj_11403 {
 		
 		StringBuilder sb = new StringBuilder();
 		
+		for(int k=1;k<=N;k++) {
+			for(int i=1;i<=N;i++) {
+				for(int j=1;j<=N;j++) {
+					if(board[i][k] == 1 && board[k][j] == 1) {
+						board[i][j] = 1;
+					}
+				}
+			}
+		}
+		
 		for(int i=1;i<=N;i++) {
 			for(int j=1;j<=N;j++) {
-				if(i != j && solve(i,j)) {
-					sb.append(1+" ");
-				}
-				else {
-					sb.append(0+" ");
-				}
+				sb.append(board[i][j]+" ");
 			}
 			sb.append("\n");
 		}
+		
+//		for(int i=1;i<=N;i++) {
+//			for(int j=1;j<=N;j++) {
+//				if(i != j && solve(i,j)) {
+//					sb.append(1+" ");
+//				}
+//				else {
+//					sb.append(0+" ");
+//				}
+//			}
+//			sb.append("\n");
+//		}
 		
 		System.out.println(sb.toString());
 	}
