@@ -46,24 +46,24 @@ public class Main_bj_11403 {
 			}
 		}
 		
-		for(int i=1;i<=N;i++) {
-			for(int j=1;j<=N;j++) {
-				sb.append(board[i][j]+" ");
-			}
-			sb.append("\n");
-		}
-		
 //		for(int i=1;i<=N;i++) {
 //			for(int j=1;j<=N;j++) {
-//				if(i != j && solve(i,j)) {
-//					sb.append(1+" ");
-//				}
-//				else {
-//					sb.append(0+" ");
-//				}
+//				sb.append(board[i][j]+" ");
 //			}
 //			sb.append("\n");
 //		}
+		
+		for(int i=1;i<=N;i++) {
+			for(int j=1;j<=N;j++) {
+				if(i != j && solve(i,j)) {
+					sb.append(1+" ");
+				}
+				else {
+					sb.append(0+" ");
+				}
+			}
+			sb.append("\n");
+		}
 		
 		System.out.println(sb.toString());
 	}
