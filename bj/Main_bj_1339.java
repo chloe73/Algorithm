@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -11,92 +12,33 @@ import java.util.PriorityQueue;
 public class Main_bj_1339 {
 	
 	static int N;
-	static ArrayList<String> list;
-	static HashSet<Character> set;
-	static HashMap<Character, Alpha> map;
-	static class Alpha implements Comparable<Alpha>{
-		@Override
-		public String toString() {
-			return "Alpha [order=" + order + ", word=" + word + ", cnt=" + cnt + "]";
-		}
-		int order;
-		char word;
-		int cnt;
-		public Alpha(char word, int order, int cnt) {
-			this.word = word;
-			this.order = order;
-			this.cnt = cnt;
-		}
-		public int compareTo(Alpha o) {
-			if(this.order == o.order)
-				return o.cnt - this.cnt; // 등장 횟수가 더 많은 문자가 우선순위가 더 높음.
-			return o.order-this.order; // 자리수가 큰 문자가 우선순위가 더 높음.
-		}
-	}
+	static int[] arr;
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		N = Integer.parseInt(br.readLine());
-		list = new ArrayList<>();
-		set = new HashSet<>();
-		map = new HashMap<>();
+		arr = new int[26];
 		
 		for(int i=0;i<N;i++) {
 			String temp = br.readLine();
-			
-			for(int k=0;k<temp.length();k++) {
-				char c = temp.charAt(k);
-				int order = (int) Math.pow(10, (temp.length()-k-1));
-				
-				if(!set.contains(c)) {
-					set.add(c);
-					if(order == 0) order = 1;
-					map.put(c, new Alpha(c, order, 1));
-//					System.out.println(c+" : "+order);
-				}
-				else {
-					Alpha a = map.get(c);
-					int count = a.cnt;
-					if(order > a.order) {
-						map.put(c, new Alpha(c, order, count+1));
-					}
-					else {
-						map.put(c, new Alpha(c, a.order, count+1));
-					}
-//					System.out.println(c+" : "+order+", "+a.cnt+1);
-				}
+			for(int j=0;j<temp.length();j++) {
+				char c = temp.charAt(j);
+				arr[c-'A'] += (int) Math.pow(10, temp.length()-1-j);
 			}
-			list.add(temp);
 		} // input end
 		
-		PriorityQueue<Alpha> pq = new PriorityQueue<>();
-		for(char c : map.keySet()) {
-			pq.add(map.get(c));
-		}
+		Arrays.sort(arr);
 		
-		HashMap<Character, Integer> numberMap = new HashMap<>();
-		int number = 9;
-		while(!pq.isEmpty()) {
-			Alpha temp = pq.poll();
-			numberMap.put(temp.word, number--);
-			System.out.println(temp);
-		}
-		
+		int num = 9;
+		int turn = 25;
 		int result = 0;
-		for(String s : list) {
-			String num = "";
-			for(int i=0;i<s.length();i++) {
-				num += numberMap.get(s.charAt(i)) + "";
-			}
-			
-//			System.out.println(num);
-			result += Integer.parseInt(num);
-		}
 		
-//		for(char c : numberMap.keySet()) {
-//			System.out.println(c+", "+numberMap.get(c));
-//		}
+		while(arr[turn] != 0) {
+			result += arr[turn] * num;
+			turn--;
+			num--;
+		}
 		
 		System.out.println(result);
 		// 단어 수학 문제는 N개의 단어로 이루어져 있으며, 각 단어는 알파벳 대문자로만 이루어져 있다. 
