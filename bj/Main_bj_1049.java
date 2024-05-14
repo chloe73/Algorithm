@@ -37,22 +37,22 @@ public class Main_bj_1049 {
 		});
 		minB = list.get(0)[1]; // 낱개 최소 가격
 		
+		Collections.sort(list, (o1,o2) -> {
+			return o1[0] - o2[0]; // 6개 묶음 가격으로 오름차순 정렬
+		});
+		minP = list.get(0)[0];
+
 		// N이 6보다 작은 경우
 		if(N < 6) {
-			result = minB * N;
+			result = Math.min(minB*N, minP);
 		}
 		else {
 			// 6보다 클 때에는 경우의 수가 나뉜다.
 			ArrayList<Integer> resultList = new ArrayList<>();
 			
 			// 1. 낱걔의 가격으로만 최소 가격을 이루는 경우
-			int price = list.get(0)[1] * N;
+			int price = minB * N;
 			resultList.add(price);
-			
-			Collections.sort(list, (o1,o2) -> {
-				return o1[0] - o2[0]; // 6개 묶음 가격으로 오름차순 정렬
-			});
-			minP = list.get(0)[0];
 			
 			// 2. 6개의 묶음이랑 낱개 구성으로 최소를 이루는 경우
 			// 여기서도 경우의 수가 나뉜다.
